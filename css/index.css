@@ -1,0 +1,14 @@
+.mid-box{
+    border-radius: var(--border-radius);
+
+    background-color: black;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    margin: 12px;
+    text-align: center;
+
+    transition: scale var(--short-transition) ease;
+}
+.mid-box:hover {
+    scale: 1.1;
+}

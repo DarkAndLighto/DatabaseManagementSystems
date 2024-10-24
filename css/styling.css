@@ -1,0 +1,41 @@
+:root{
+    --border-color: white;
+    --border-radius: 12px;
+    --text-color: white;
+    --border-width: 2px;
+
+    --snappy-transition: 0.1s;
+    --short-transition: 0.3s;
+    --medium-transition: 0.6s;
+    --long-transition: 1s;
+    --longer-transition: 1.5s;
+}
+
+body {
+    color: var(--text-color);
+    
+    background-image: linear-gradient(45deg,purple, pink,pink, rgb(255, 255, 37));
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.decorative-line {
+    border: 1px solid var(--color, var(--border-color));
+
+    margin: auto;
+    width: 90%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 2px;
+}
+
+.blurry-box {
+    border-radius: var(--border-radius);
+    border-width: var(--border-width);
+    border-color: var(--border-color);
+
+    background-color: rgba(255, 255, 255, 0.135);
+    border-style: solid;
+    backdrop-filter: blur(15px);
+}
