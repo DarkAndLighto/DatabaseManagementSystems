@@ -1,0 +1,11 @@
+1.a - cmd in project directory
+1.b - code .
+
+2.a - connect to the database in vs code
+
+3.a - cmd in js directory
+3.b - nodemon server.js 
+
+Now connection should be established between the two and information is being displayed on the website
+
+note: Once running, do not close the terminal for auto-restart on changes

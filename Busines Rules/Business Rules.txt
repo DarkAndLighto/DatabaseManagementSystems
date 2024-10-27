@@ -1,0 +1,150 @@
+Person
+ContantInformation
+Manager
+hospital
+city
+district
+building
+patient
+doctor
+nurse
+staff
+department
+room
+appointment
+payment
+prescription
+medication
+insurance
+emergencyContact
+    M:M relation: PrescriptionMedication
+
+//billing
+//surgery
+//feedback
+//medicalRecord
+
+Notes{
+    -removed billing, surgery, feedback, medicalRecord
+    -added contanctInfo (for data repetition)
+    -added Person (also for data repetition) but idk if its addition in this system is smart or               
+        not
+    -appointment entity might be getting too long
+    -swap out insurance for medicalRecord?
+    -remove the relation hospital:docotr?
+        because doctors are already linked to the hospital via department
+        and nurse/staff/Manager aren't linked to begin with
+} 
+
+Person{
+    MB: patient OR doctor OR nurse OR staff OR Manager
+    1:M ContantInformation
+}
+
+ContantInformation{
+    1:1 Person
+}
+
+Manager{
+    0:1 hospital
+    0:M department
+}
+hospital {
+    1:1 Manager
+    1:1 city
+    1:1 district
+    1:M hospital
+    1:M department
+}
+
+city {
+    0:M hospital
+    1:M district
+}
+
+district{
+    0:M hospital
+    1:1 city
+    0:M building
+}
+
+building{
+    //maybe add room here?
+    1:1 district
+}
+
+patient{
+    1:M appointment
+    === 0:1 surgery
+    1:M payment //the patient does the payment directly?
+    0:1 insurance
+    0:M emergencyContact
+}
+
+doctor{
+    1:1 hospital
+    1:1 department
+    0:M appointment
+}
+
+nurse {
+    1:1 department
+    //0:M surgery
+}
+
+staff{
+    1:1 department
+}
+
+department{
+    1:1 Manager
+    1:1 hospital
+    1:M doctor
+    1:M nurse
+    1:M staff
+    0:M room
+}
+
+room{
+    1:1 department
+    0:M appointment
+}
+
+appointment{
+    1:1 patient
+    1:1 doctor
+    1:1 department //delete because doctor has departmentID?
+    0:1 room
+    1:1 payment
+    //0:1 surgery
+    1:1 prescription
+}
+
+surgery{
+    1:1 appointment
+}
+
+payment{
+    1:1 appointment
+}
+
+prescription{
+    1:1 appointment
+    1:M medication
+}
+
+medication{
+    0:M prescription
+}
+
+insurance{
+    1:1 patient
+}
+
+medicalRecord{
+    1:1 appointment
+}
+
+emergencyContact{
+    1:1 patient
+}
