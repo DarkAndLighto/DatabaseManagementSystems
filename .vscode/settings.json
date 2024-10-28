@@ -6,7 +6,7 @@
             "port": 5432,
             "driver": "PostgreSQL",
             "name": "PG Local",
-            "database": "Test 1",
+            "database": "MainData",
             "username": "postgres",
             "password": "12345678"
         }

@@ -22,6 +22,37 @@ This allows other parts of the app to reference the same pool without redefining
 const { setupRoutes } = require('./query'); // Import the function from query.js
 setupRoutes(app); // Set up routes
 
+
+
+
+
+/* app.get('/combinedData', async(req, res) => {
+  try {
+    const result = await pool.query(`SELECT 
+    u.user_id, 
+    u.first_name, 
+    u.last_name, 
+    u.gender, 
+    u.date_of_birth, 
+    c.phone_number, 
+    c.address, 
+    c.email
+  FROM 
+    users u
+  JOIN 
+    contact_information c
+  ON 
+    u.user_id = c.user_id;`);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+}); */
+
+
+
+
 // Start the server
 const PORT = 5000;
 app.listen(PORT, () => {
