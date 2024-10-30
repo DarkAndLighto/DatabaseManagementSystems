@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     date_of_birth DATE NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS contact_information (
+CREATE TABLE contact_information (
     contact_id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
     phone_number VARCHAR(15) NOT NULL,
@@ -14,83 +14,115 @@ CREATE TABLE IF NOT EXISTS contact_information (
     email VARCHAR(50) NOT NULL
 );
 
-DO $$
-DECLARE 
-    new_user_id INT;
-BEGIN
-    -- Insert the user and get the user_id
-    INSERT INTO users (first_name, last_name, gender, date_of_birth) 
-    VALUES ('Ammar', 'Ajam', 'M', '1000-10-10')
-    RETURNING user_id INTO new_user_id;
-
-    -- Now use the captured user_id to insert into contact_information
-    INSERT INTO contact_information (user_id, phone_number, address, email) 
-    VALUES (new_user_id, '12345', 'Fifth Street', 'ammarajam08@example.com');
-END $$;
-
-SELECT 
-    u.user_id, 
-    u.first_name, 
-    u.last_name, 
-    u.gender, 
-    u.date_of_birth, 
-    c.phone_number, 
-    c.address, 
-    c.email
-FROM 
-    users u
-JOIN 
-    contact_information c
-ON 
-    u.user_id = c.user_id;
-
-
-select * from users;
-select * from contact_information;
-
-DELETE from users;
-DELETE from contact_information;
-
-
-CREATE TABLE IF NOT EXISTS patients (
-    user_id INT PRIMARY KEY,
-    department_id VARCHAR(255),
-    license_id INT NOT NULL,
-    CONSTRAINT fk_users FOREIGN KEY(user_id) REFERENCES users(user_id)
+CREATE TABLE hospital (
+    hospital_id SERIAL PRIMARY KEY,
+    city_id INT REFERENCES city(city_id) ON DELETE CASCADE,
+    district_id INT REFERENCES district(district_id) ON DELETE CASCADE,
+    manager_id INT REFERENCES managers(manager_id) ON DELETE CASCADE,
+    name VARCHAR(30) NOT NULL,
+    address VARCHAR(30) NOT NULL UNIQUE,
+    phone_number VARCHAR(30) NOT NULL UNIQUE,
+    email VARCHAR(30) NOT NULL UNIQUE
 );
 
 
-CREATE TABLE doctors (
+CREATE TABLE city (
+    city_id SERIAL PRIMARY KEY,
+    name VARCHAR(30) NOT NULL UNIQUE
 );
 
+CREATE TABLE district (
+    district_id SERIAL PRIMARY KEY,
+    name VARCHAR(30) NOT NULL UNIQUE
+);
 
+CREATE TABLE patient(
+    patient_id INT PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE
+);
 
+CREATE TABLE emergency_contact(
+    em_con_id SERIAL PRIMARY KEY,
+    patient_id INT REFERENCES patient(patient_id) ON DELETE CASCADE,
+    name VARCHAR(30) NOT NULL,
+    last_name VARCHAR(30) NOT NULL,
+    relationship VARCHAR(30) NOT NULL,
+    phone_number VARCHAR(30) NOT NULL UNIQUE,
+    email VARCHAR(30) UNIQUE
+);
 
-SELECT * FROM users;
-SELECT * FROM patients;
-SELECT * FROM doctors;
+CREATE TABLE insurance(
+    insurance_id SERIAL PRIMARY KEY,
+    patient_id INT REFERENCES patient(patient_id) ON DELETE CASCADE,
+    insurance_provider VARCHAR(30) NOT NULL,
+    policy_number INT NOT NULL,
+    coverage_amount INT NOT NULL
+);
 
-
-
-DELETE FROM users;
-DELETE FROM patients;
-DELETE FROM doctors;
-
-
-drop TABLE patients;
-drop TABLE doctors;
-drop TABLE users;
-
-CREATE TABLE departments (
+CREATE TABLE departments(
     department_id SERIAL PRIMARY KEY,
-    department_name VARCHAR(100) NOT NULL
+    hospital_id INT REFERENCES hospital(hospital_id) ON DELETE CASCADE,
+    manager_id INT REFERENCES managers(manager_id) ON DELETE CASCADE,
+    name VARCHAR(20) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    phone_number INT NOT NULL UNIQUE
 );
 
-CREATE TABLE employees (
-    employee_id SERIAL PRIMARY KEY,
-    employee_name VARCHAR(100) NOT NULL,
-    department_id INT,
-    CONSTRAINT fk_department
-        FOREIGN KEY (department_id) 
-        REFERENCES departments (department_id),
+CREATE TABLE managers(
+    manager_id SERIAL PRIMARY KEY
+);
+
+CREATE TABLE doctors(
+    doctor_id INT PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
+    department_id INT REFERENCES departments(department_id) ON DELETE CASCADE,
+    license_id INT NOT NULL
+);
+
+CREATE TABLE staff(
+    staff_id INT PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
+    department_id INT REFERENCES departments(department_id) ON DELETE CASCADE,
+    role VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE nurses(
+    nurse_id INT PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE appointments(
+    appointment_id SERIAL PRIMARY KEY,
+    patient_id INT REFERENCES patient(patient_id) ON DELETE CASCADE,
+    doctor_id INT REFERENCES doctors(doctor_id) ON DELETE CASCADE,
+    payment_id INT REFERENCES payments(payment_id) ON DELETE CASCADE,
+    date VARCHAR(255) NOT NULL,
+    description VARCHAR(255),
+    app_status char(2) CHECK (app_status IN ('SC', 'CO', 'CA'))
+);
+
+CREATE TABLE payments(
+    payment_id SERIAL PRIMARY KEY,
+    date VARCHAR(255) NOT NULL,
+    method VARCHAR(30) NOT NULL,
+    amount INT NOT NULL
+);
+
+CREATE TABLE prescriptions(
+    prescription_id SERIAL PRIMARY KEY,
+    appointment_id INT REFERENCES appointments(appointment_id) ON DELETE CASCADE,
+    dosage INT NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    notes VARCHAR(255)
+);
+
+CREATE TABLE prescription_medications(
+    pres_med_id SERIAL PRIMARY KEY,
+    prescription_id INT REFERENCES prescriptions(prescription_id) ON DELETE CASCADE,
+    medication_id INT REFERENCES medications(medication_id) ON DELETE CASCADE
+);
+
+CREATE TABLE medications(
+    medication_id SERIAL PRIMARY KEY,
+    name VARCHAR(30) NOT NULL UNIQUE,
+    adminstraiton_method VARCHAR(30) NOT NULL,
+    manufacturer VARCHAR(255) NOT NULL,
+    expiry_date DATE NOT NULL
 );

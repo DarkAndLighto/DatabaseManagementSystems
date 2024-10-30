@@ -4,7 +4,7 @@
 2.a - connect to the database in vs code
 
 3.a - cmd in js directory
-3.b - nodemon server.js 
+3.b - nodemon server.js
 
 Now connection should be established between the two and information is being displayed on the website
 

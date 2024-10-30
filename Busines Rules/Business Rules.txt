@@ -1,4 +1,4 @@
-Person
+users
 ContantInformation
 Manager
 hospital
