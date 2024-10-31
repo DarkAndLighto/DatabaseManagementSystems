@@ -2,6 +2,9 @@
 const express = require('express');
 const cors = require('cors'); // Optional, for handling cross-origin requests
 const { Pool } = require('pg'); // Import Pool directly in server.js
+var bodyParser = require('body-parser')
+const path = require('path'); // Import the path module
+
 
 const app = express();
 app.use(cors()); // If needed
@@ -51,10 +54,24 @@ setupRoutes(app); // Set up routes
 }); */
 
 
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Route to handle form submissions with urlencodedParser middleware
+app.post('/hello', urlencodedParser, (req, res) => {
+    console.log('Received Form Data:', req.body);
+    res.send(res.body);
+});
+
+app.get('/page', urlencodedParser, (req, res) => {
+  // res.send(bb);
+});
 
 // Start the server
 const PORT = 5000;
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

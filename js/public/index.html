@@ -62,7 +62,7 @@
 
     <div class="container margin-top">
         <div class="blurry-box input-box">
-            <form id="userForm" method="post" action="http://127.0.0.1:5000/hello">
+            <form id="userForm" method="post" action="/hello">
 
                 
             <div class="row input-box-row">      
@@ -164,21 +164,21 @@
         }
         SelectDatabase('users'); */
 
-        let form = document.getElementById('userForm');
+        // let form = document.getElementById('userForm');
 
-        form.addEventListener('submit', function(event){
-            const name = document.getElementById('name');
-            const formD = new FormData();
-            form.append('name', name);
-            fetch(`http://localhost:5000/hello`, {
-                method: 'post',
-                body: formD,
-            });
-            alert('Name: ' + name.value);
-            event.preventDefault();
-        });
+        // form.addEventListener('submit', function(event){
+        //     const name = document.getElementById('name');
+        //     const formD = new FormData();
+        //     form.append('name', name);
+        //     fetch(`http://localhost:5000/hello`, {
+        //         method: 'post',
+        //         body: formD,
+        //     });
+        //     alert('Name: ' + name.value);
+        //     event.preventDefault();
+        // });
 
-        fetch(`http://localhost:5000/combinedData`)
+        fetch(`/combinedData`)
             .then(response => response.json())
             .then(data => {
             const userList = document.getElementById('user-list');
