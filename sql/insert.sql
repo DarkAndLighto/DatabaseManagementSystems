@@ -8,18 +8,13 @@ BEGIN
 
     INSERT INTO contact_information (user_id, phone_number, address, email) 
     VALUES (new_user_id, '412321', 'Fifth Street', 'ammar1@example.com');
+
+    INSERT INTO patient(patient_id)
+    VALUES (new_user_id);
 END $$;
 
 SELECT
-    u.user_id,
-    c.contact_id,
-    u.first_name,
-    u.last_name,
-    u.gender,
-    u.date_of_birth,
-    c.phone_number,
-    c.address,
-    c.email
+    *
 FROM
     users u
 JOIN

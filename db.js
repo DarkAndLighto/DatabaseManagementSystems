@@ -1,4 +1,4 @@
-const express = require('express')
+/* const express = require('express')
 const router = express.Router()
 const {pool} = require('./db-connection')
 
@@ -16,4 +16,4 @@ router.get('/users', async (req, res) => {
       }
   })
 
-module.exports = router
+module.exports = router */

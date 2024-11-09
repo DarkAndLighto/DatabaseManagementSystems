@@ -53,31 +53,4 @@ async function GetCombinedData(pool, res)
   }
 }
 
-async function GetCombinedData2(pool)
-{
-  try {
-    const result = await pool.query(`
-      SELECT 
-      u.user_id, 
-      u.first_name, 
-      u.last_name, 
-      u.gender, 
-      u.date_of_birth, 
-      c.phone_number, 
-      c.address, 
-      c.email
-    FROM 
-      users u
-    JOIN 
-      contact_information c
-    ON 
-      u.user_id = c.user_id;
-    `);
-    console.log(result.rows);
-  } catch (err) {
-    console.error(err);
-    return false;
-  }
-}
-
-module.exports = { setupRoutes, GetCombinedData2 };
+module.exports = { setupRoutes };

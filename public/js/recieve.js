@@ -1,4 +1,4 @@
-// js/recieve.js
+/* // js/recieve.js
 document.addEventListener("DOMContentLoaded", () => {
     // Get the form element by ID
     const form = document.getElementById("userForm");
@@ -37,3 +37,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+ */

@@ -1,0 +1,46 @@
+.mid-box{
+    border-radius: var(--border-radius);
+
+    background-color: black;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    margin: 12px;
+    text-align: center;
+
+    transition: scale var(--short-transition) ease;
+}
+.mid-box:hover {
+    scale: 1.1;
+}
+
+.input-box{
+    /* background-color: green; */
+}
+
+.input-form{
+    border-radius: 6px;
+    border-style: none;
+    width: 70%;
+    color: gray;
+}
+.input-form input:focus{
+    border-color: pink;
+    border-width: 4px;
+}
+
+.input-box-submit{
+    display: flex;
+    justify-self: center;
+    text-align: center;
+    margin-bottom: 12px;
+}
+.input-box-submit input{
+    height: 40px;
+    width: 50%;
+}
+
+.input-box-row{
+    margin-top: 12px;
+    margin-bottom: 12px;
+    margin-left: 12px;
+}

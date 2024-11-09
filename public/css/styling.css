@@ -43,3 +43,18 @@ body {
 .margin-top{
     margin-top: 12px;
 }
+
+.button-basics{
+    border-style: solid;
+    border-radius: 12px;
+    border-width: 1px;
+    background-color: white;
+    transition: 
+        background-color var(--snappy-transition) ease,
+        scale var(--snappy-transition) ease;
+}
+
+.button-basics:hover{
+    background-color: pink;
+    scale: 1.05;
+}

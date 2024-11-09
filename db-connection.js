@@ -1,4 +1,4 @@
-const { Pool } = require('pg');
+/* const { Pool } = require('pg');
 
 // Set up PostgreSQL connection using `pg` Pool
 const pool = new Pool({
@@ -9,4 +9,4 @@ const pool = new Pool({
     port: 5432,
   });
 
-module.exports = {pool}
+module.exports = {pool} */

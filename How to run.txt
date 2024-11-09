@@ -1,10 +1,9 @@
 1.a - cmd in project directory
 1.b - code .
+1.c - Check if server is already running http://localhost:5000/
+	1.c.1 - if not, nodemon server.js
 
 2.a - connect to the database in vs code
-
-3.a - cmd in js directory
-3.b - nodemon server.js
 
 Now connection should be established between the two and information is being displayed on the website
 
