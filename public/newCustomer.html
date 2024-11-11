@@ -28,34 +28,31 @@
 
     <div class="container margin-top">
         <div class="blurry-box input-box">
-            <form id="userForm" onsubmit="submitForm(event)" method="post" action="/hello">
-
-                
             <div class="row input-box-row">      
                 <div class="col-12">
-                    <label style="margin-bottom: 4px;"> • Please enter your name</label>
+                    <label style="margin-bottom: 4px;">• Please enter your name</label>
                     <div class="form-floating input-form">
-                        <input required class="form-control" id="name" name="first_name" placeholder="">
-                        <label for="name">Name</label>
+                        <input required class="form-control" id="first_name" placeholder="">
+                        <label for="first_name">Name</label>
                     </div>
                 </div>  
             </div>
                 
             <div class="row input-box-row">      
                 <div class="col-12">
-                    <label style="margin-bottom: 4px;"> • please enter your last name</label>
+                    <label style="margin-bottom: 4px;">• Please enter your last name</label>
                     <div class="form-floating input-form">
-                        <input required class="form-control" id="last_name" name="last_name" placeholder="">
-                        <label for="last_name">Last name</label>
+                        <input required class="form-control" id="last_name" placeholder="">
+                        <label for="last_name">Last Name</label>
                     </div>
                 </div>  
             </div>
                 
             <div class="row input-box-row">      
                 <div class="col-12">
-                    <label style="margin-bottom: 4px;"> • please enter your gender</label>
+                    <label style="margin-bottom: 4px;">• Please enter your gender</label>
                     <div class="form-floating input-form">
-                        <input required class="form-control" id="gender" name="gender" placeholder="">
+                        <input required class="form-control" id="gender" placeholder="">
                         <label for="gender">M, F</label>
                     </div>
                 </div>  
@@ -63,19 +60,19 @@
             
             <div class="row input-box-row">      
                 <div class="col-12">
-                    <label style="margin-bottom: 4px;"> • please enter your date of birth</label>
+                    <label style="margin-bottom: 4px;">• Please enter your date of birth</label>
                     <div class="form-floating input-form">
-                        <input required class="form-control" id="date_birth" name="date_birth" placeholder="">
-                        <label for="date_birth">31/12/1900</label>
+                        <input required class="form-control" id="date_birth" placeholder="">
+                        <label for="date_birth">12/31/1900</label>
                     </div>
                 </div>  
             </div>
             
             <div class="row input-box-row">      
                 <div class="col-12">
-                    <label style="margin-bottom: 4px;"> • please enter your phone number</label>
+                    <label style="margin-bottom: 4px;">• Please enter your phone number</label>
                     <div class="form-floating input-form">
-                        <input required class="form-control" id="phone_number" name="phone_number" placeholder="">
+                        <input required class="form-control" id="phone_number" placeholder="">
                         <label for="phone_number">+963 XXXXXXX</label>
                     </div>
                 </div>  
@@ -83,9 +80,9 @@
             
             <div class="row input-box-row">      
                 <div class="col-12">
-                    <label style="margin-bottom: 4px;"> • please enter your address</label>
+                    <label style="margin-bottom: 4px;">• Please enter your address</label>
                     <div class="form-floating input-form">
-                        <input required class="form-control" id="address" name="address" placeholder="">
+                        <input required class="form-control" id="address" placeholder="">
                         <label for="address">Aleppo/Shahaba</label>
                     </div>
                 </div>  
@@ -93,47 +90,116 @@
             
             <div class="row input-box-row">      
                 <div class="col-12">
-                    <label style="margin-bottom: 4px;"> • please enter your email</label>
+                    <label style="margin-bottom: 4px;">• Please enter your email</label>
                     <div class="form-floating input-form">
-                        <input required class="form-control" id="email" name="email" placeholder="">
+                        <input required class="form-control" id="email" placeholder="">
                         <label for="email">fname_lname@gmail.com</label>
                     </div>
                 </div>  
             </div>
-
+    
             <div class="row input-box-submit">
                 <div class="col-12">
-                    <input class="button-basics" type="submit" value="Add new user">
+                    <button class="button-basics" id="submit-button" onclick="SubmitInfo()">Add new user</button>
                 </div>
             </div>
         </div>
     </div>
+    
 
     <script>
+        let params = new URLSearchParams(window.location.search);
+        let button = document.getElementById('submit-button');
+        let param = 'mode';
+        if (params.get(param).startsWith('edit')) {
+        button.innerHTML = "Edit User";
 
-        function submitForm(event) 
+        let user_id = params.get(param).replace('edit', '');
+        
+        fetch(`/searchResults?queryText=${user_id}&queryType=u.user_id`)
+            .then(response => response.json())
+            .then(data => {
+                const userData = data[0];   // Technically, if we're searching the ID,
+                                            // then the first result will always be who we want :)
+
+                let dateOfBirth = new Date(userData.date_of_birth).toLocaleDateString();
+                
+                document.getElementById('first_name').value = userData.first_name.trim();
+                document.getElementById('last_name').value = userData.last_name.trim();
+                document.getElementById('gender').value = userData.gender.trim();
+                document.getElementById('date_birth').value = dateOfBirth;
+                document.getElementById('phone_number').value = userData.phone_number;
+                document.getElementById('address').value = userData.address.trim();
+                document.getElementById('email').value = userData.email.trim();
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        }
+
+        else if (params.get(param) === 'add')
+        { 
+            button.innerHTML = "Add User"; 
+        }
+        
+        function getQueryParam(param)
         {
-            event.preventDefault();
+            return params.get(param);
+        }
 
-            const form = document.getElementById('userForm');
-            const formData = new URLSearchParams(new FormData(form));
+        function SubmitInfo() 
+        {
+            let first_name      = document.getElementById('first_name').value;
+            let last_name       = document.getElementById('last_name').value;
+            let gender          = document.getElementById('gender').value;
+            let date_birth      = document.getElementById('date_birth').value;
+            let phone_number    = document.getElementById('phone_number').value;
+            let address         = document.getElementById('address').value;
+            let email           = document.getElementById('email').value;
 
-            fetch(form.action, {
-                method: 'POST',
-                body: formData
+            let mode = getQueryParam(param);
+
+            if (mode.startsWith('edit')) {
+                let user_id = mode.replace('edit', '');
+                UpdateUser(user_id, first_name, last_name, gender, date_birth, phone_number, address, email);
+            }
+            else if (mode === 'add') 
+            {
+                AddNewUser(first_name, last_name, gender, date_birth, phone_number, address, email);
+            }
+        }
+
+        function AddNewUser(first_name, last_name, gender, date_birth, phone_number, address, email)
+        {
+            fetch(`/addNewUser?
+            &first_name=${first_name}
+            &last_name=${last_name}
+            &gender=${gender}
+            &date_birth=${date_birth}
+            &phone_number=${phone_number}
+            &address=${address}
+            &email=${email}`)
+            .then(response => response.json())
+            .then (data => {
+                window.location.href = `index.html`;
             })
-            .then(response => {
-                if (response.ok)
-                {
-                    window.location.href = 'index.html';
-                } else
-                {
-                    alert('Failed to submit the form');
-                }
+            .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function UpdateUser(user_id, first_name, last_name, gender, date_birth, phone_number, address, email)
+        {
+            fetch(`/updateData?
+            &user_id=${user_id}
+            &first_name=${first_name}
+            &last_name=${last_name}
+            &gender=${gender}
+            &date_birth=${date_birth}
+            &phone_number=${phone_number}
+            &address=${address}
+            &email=${email}`)
+            .then(response => response.json())
+            .then (data => {
+                window.location.href = `patientList.html`;
             })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+            .catch(error => console.error('Error fetching data:', error));
         }
 
     </script>

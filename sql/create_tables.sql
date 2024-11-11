@@ -6,16 +6,18 @@ CREATE TABLE users (
     date_of_birth DATE NOT NULL
 );
 
-SELECT * from users
-WHERE user_id = 7;
+SELECT * from contact_information;
 
 CREATE TABLE contact_information (
     contact_id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-    phone_number VARCHAR(15) NOT NULL,
+    phone_number INT NOT NULL,
     address VARCHAR(100) NOT NULL,
-    email VARCHAR(50) NOT NULL
+    email VARCHAR(50) NOT NULL UNIQUE
 );
+
+ALTER TABLE contact_information
+ALTER COLUMN phone_number TYPE integer USING phone_number::integer;
 
 CREATE TABLE hospital (
     hospital_id SERIAL PRIMARY KEY,

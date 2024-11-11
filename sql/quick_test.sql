@@ -16,4 +16,24 @@ ON
 JOIN
     contact_information c
 ON
-    c.user_id = p.patient_id;
+    c.user_id = p.patient_id
+ORDER BY
+    u.user_id;
+WHERE
+    lower(u.user_id) = 16;
+
+UPDATE 
+    users
+SET
+    first_name = 'C',
+    last_name = 'C'
+WHERE
+    user_id = 16;
+
+UPDATE 
+    contact_information
+SET
+    phone_number = 1555
+WHERE
+    user_id = 16;
+
