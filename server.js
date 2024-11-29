@@ -92,16 +92,16 @@ app.get('/addNewUser', (req, res) => {
   `;
 
   pool.query(query)
-    .then(() => {
-      res.header({
-        'Content-type': 'application/json'
-      });
-      res.send(req.body);
-    })
-    .catch((error) => {
-      console.error('Error executing query:', error);
-      res.status(500).send('Server error');
+  .then(() => {
+    res.header({
+      'Content-type': 'application/json'
     });
+    res.send(req.body);
+  })
+  .catch((error) => {
+    console.error('Error executing query:', error);
+    res.status(500).send('Server error');
+  });
 });
 
 
@@ -110,7 +110,7 @@ app.get('/addNewUser', (req, res) => {
 app.get('/searchResults', (req, res) => {
   const queryText = req.query.queryText;
   const queryType = req.query.queryType;
-  console.log('Quety Text: ' + queryText + ' Query Type: ' + queryType);
+  console.log('Search results for: Query Text: ' + queryText + ' Query Type: ' + queryType);
   // Check if queryText is an integer
   const isNumeric = !isNaN(queryText);
 
@@ -204,14 +204,446 @@ app.delete('/deletePatient', (req, res) => {
   `;
 
   pool.query(query)
+  .then(() => {
+    res.json({ success: true });
+  })
+  .catch((error) => {
+    console.error('Error executing query:', error);
+    res.status(500).send('Server error');
+  });
+});
+
+
+
+
+
+
+
+
+///////////////////// PATIENT PROFILE PAGE ////////////////////////////
+
+
+app.get('/newEmCon', (req, res) => {
+  const patient_id = req.query.patient_id;
+  console.log("Adding em con to patient ID: " + patient_id);
+  console.log(`newEmCon: Adding emergency contact to patient ${patient_id}`);
+  const first_name = req.query.first_name;
+  const last_name = req.query.last_name;
+  const gender = req.query.gender;
+  const date_of_birth = req.query.date_birth;
+  const relationship = req.query.relationship;
+  const phone_number = req.query.phone_number;
+  const address = req.query.address;
+  const email = req.query.email;
+
+  const query = 
+  `
+    CALL add_emergency_contact(
+    '${patient_id}',
+    '${first_name}',
+    '${last_name}',
+    '${gender}',
+    '${date_of_birth}',
+    '${relationship}',
+    '${phone_number}',
+    '${address}',
+    '${email}'
+    );
+  `
+
+  pool.query(query)
+  .then(() => {
+    res.header({
+      'Content-type': 'application/json'
+    });
+    res.send(req.body);
+  })
+  .catch((error) => {
+    console.error('Error executing query:', error);
+    res.status(500).send('Server error');
+  });
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////// GENEREAL  ///////////////////////////////////
+
+app.get('/newRecord', (req, res) => {
+  const table_name = req.query.table_name;
+  delete req.query.table_name; // Remove table_name from the query object
+
+  const columns = Object.keys(req.query).join(', ');
+  const values = Object.values(req.query).map(value => `'${value}'`).join(', ');
+
+  console.log(`===== newRecord: Adding record to table ${table_name}`);
+  console.log(`Columns: ${columns}`);
+  console.log(`Values: ${values}`);
+
+  const query = `
+    INSERT INTO ${table_name} (${columns})
+    VALUES (${values});
+  `;
+
+  pool.query(query)
     .then(() => {
-      res.json({ success: true });
+      res.header({
+        'Content-type': 'application/json'
+      });
+      res.send({ success: true });
     })
     .catch((error) => {
       console.error('Error executing query:', error);
       res.status(500).send('Server error');
     });
 });
+
+app.get('/updateRecord', (req, res) => {
+  const table_name = req.query.table_name;
+  const column = req.query.column;
+  const row = req.query.row;
+  
+  delete req.query.table_name;  // Remove table_name from the query object
+  delete req.query.column;   // Remove id_column from the query object
+  delete req.query.row;    // Remove id_value from the query object
+
+  const updates = Object.keys(req.query).map(key => `${key.trim()} = '${req.query[key].trim()}'`).join(', ');
+
+  console.log(`===== updateRecord: Updating record in table ${table_name} with id ${row} on column ${column}`);
+  console.log(`Updates: ${updates}`);
+
+  const query = `
+    UPDATE ${table_name}
+    SET ${updates}
+    WHERE ${column} = '${row}';
+  `;
+
+  pool.query(query)
+    .then(() => {
+      res.header({
+        'Content-type': 'application/json'
+      });
+      res.send({ success: true });
+    })
+    .catch((error) => {
+      console.error('Error executing query:', error);
+      res.status(500).send('Server error');
+    });
+});
+
+app.get('/getRowsFromTable', (req, res) => {
+  const table_name = req.query.table_name;
+
+  console.log(` ===== getRowsFromTable: We are getting all rows from table ${table_name}`);
+
+  const query = 
+  `
+    SELECT * FROM ${table_name};
+  `;
+
+  pool.query(query)
+  .then((results) => {
+    res.header({
+      'Content-type': 'application/json'
+    });
+    res.send(results.rows);  // Send the query results
+  })
+  .catch((error) => {
+    console.error('Error executing query:', error);
+    res.status(500).send('Server error');
+  });
+})
+
+app.get('/getRowFromTable', (req, res) => {
+  const table_name = req.query.table_name;
+  const column = req.query.column;
+  const row = req.query.row;
+
+  console.log(`===== getRowFromTable: Getting row: ${row} from table ${table_name} based on column ${column}`);
+
+  const query = 
+  `
+    SELECT * FROM ${table_name}
+    WHERE ${column} = ${row};
+  `;
+
+  pool.query(query)
+  .then((results) => {
+    res.header({
+      'Content-type': 'application/json'
+    });
+    res.send(results.rows);  // Send the query results
+  })
+  .catch((error) => {
+    console.error('Error executing query:', error);
+    res.status(500).send('Server error');
+  });
+});
+
+app.get('/getRowsFromTableSorted', (req, res) => {
+  const table_name = req.query.table_name;
+
+  console.log(`===== getRowFromTable: Getting all rows from table ${table_name} SORTED`);
+
+  fetch(`http://localhost:5000/getPrimaryKey?table_name=${table_name}`)
+  .then(response => response.json())
+  .then(data => {
+    const primaryKey = data.primary_key;
+
+    const dataQuery = `
+      SELECT * FROM ${table_name}
+      ORDER BY ${primaryKey} ASC;
+    `;
+
+    return pool.query(dataQuery);
+  })
+  .then((results) => {
+    res.header({ 'Content-type': 'application/json' });
+    res.send(results.rows);
+  })
+  .catch((error) => {
+    console.error('Error executing query:', error);
+    res.status(500).send('Server error');
+  });
+});
+
+app.get('/getRowFromTableSorted', (req, res) => {
+  const table_name = req.query.table_name;
+  const column = req.query.column;
+  const row = req.query.row;
+
+  console.log(`===== getRowFromTable: Getting row ${row} from table ${table_name} based on column ${column}`);
+
+  fetch(`http://localhost:5000/getPrimaryKey?table_name=${table_name}`)
+  .then(response => response.json())
+  .then(data => {
+    const primaryKey = data.primary_key;
+
+    const dataQuery = `
+      SELECT * FROM ${table_name}
+      WHERE ${column} = $1
+      ORDER BY ${primaryKey} ASC;
+    `;
+
+    return pool.query(dataQuery, [row]);
+  })
+  .then((results) => {
+    res.header({ 'Content-type': 'application/json' });
+    res.send(results.rows);
+  })
+  .catch((error) => {
+    console.error('Error executing query:', error);
+    res.status(500).send('Server error');
+  });
+});
+
+app.get('/dropRowFromTable', (req, res) => {
+  const table_name = req.query.table_name;
+  const column = req.query.column;
+  const row = req.query.row;
+
+  console.log(` ===== dropRowFromTable: We are deleting row ${row} from table ${table_name} based on column ${column}`);
+
+  const query =
+  `
+    DELETE FROM ${table_name}
+    WHERE ${column} = ${row};
+  `
+
+  pool.query(query)
+  .then(() => {
+    res.json({ success: true });
+  })
+  .catch((error) => {
+    console.error('Error executing query:', error);
+    res.status(500).send('Server error');
+  });
+})
+
+app.get('/searchRowsFromTable', (req, res) => {
+  const table_name = req.query.table_name;
+  const column = req.query.column;
+  const row = req.query.row;
+
+  console.log(`===== searchRowsFromTable: We are getting row id: "${row}" from table ${table_name} based on row name ${column}`);
+  
+  const isNumeric = !isNaN(row);
+  
+  const query = `
+    SELECT * FROM ${table_name}
+    WHERE ${isNumeric ? `CAST(${column} AS TEXT) LIKE '%${row}%'` : `LOWER(${column}) LIKE LOWER('%${row}%')`};
+  `;
+
+  pool.query(query)
+    .then((results) => {
+      res.header({
+        'Content-type': 'application/json'
+      });
+      res.send(results.rows);  // Send the query results
+    })
+    .catch((error) => {
+      console.error('Error executing query:', error);
+      res.status(500).send('Server error');
+    });
+});
+
+app.get('/searchRowsFromJoinedTables', (req, res) => {
+  const table_name = req.query.table_name;
+  const table_name_2 = req.query.table_name_2;
+  const join_row_1 = req.query.join_row_1;
+  const join_row_2 = req.query.join_row_2;
+  const column = req.query.column;
+  const row = req.query.row;
+
+  console.log(`===== searchRowsFromJoinedTables: We are getting row id: ${row} from table1 ${table_name} based on row name ${column} joined on table2 ${table_name_2} based on join_row_1 ${join_row_1} = join_row_2 ${join_row_2}`);
+  
+  const isNumeric = !isNaN(row);
+
+  const query = `
+    SELECT 
+      * FROM ${table_name} t1
+    JOIN
+      ${table_name_2} t2
+    ON
+      t1.${join_row_1} = t2.${join_row_2}
+    WHERE 
+      ${isNumeric ? `CAST(t1.${column} AS TEXT) LIKE '%${row}%'` : `LOWER(t1.${column}) LIKE LOWER('%${row}%')`};
+  `;
+
+  console.log("Constructed Query:", query);  // Log the constructed query for debugging
+
+  pool.query(query)
+    .then((results) => {
+      res.header({
+        'Content-type': 'application/json'
+      });
+      res.send(results.rows);  // Send the query results
+    })
+    .catch((error) => {
+      console.error('Error executing query:', error);
+      res.status(500).send('Server error');
+    });
+});
+
+app.get('/searchRowsTwoConditionsFromTable', (req, res) => {
+  const table_name = req.query.table_name;
+  const column_1 = req.query.column_1;
+  const column_2 = req.query.column_2;
+  const row_1 = req.query.row_1;
+  const row_2 = req.query.row_2;
+
+  console.log(`===== searchRowsTwoConditionsFromTable: We are getting column_1 ${column_1} based on row_1 ${row_1} and column_2 ${column_2} based on row_2 ${row_2} from table_name ${table_name}`);
+  
+  const isNumeric = !isNaN(row_1);
+  const isNumeric2 = !isNaN(row_2);
+
+  const query = 
+  `  
+    SELECT 
+      *
+    FROM 
+      ${table_name}
+    WHERE 
+      ${isNumeric ? `CAST(${column_1} AS TEXT) LIKE '%${row_1}%'` : `LOWER(${column_1}) LIKE LOWER('%${row_1}%')`}
+    AND
+      ${isNumeric2 ? `CAST(${column_2} AS TEXT) LIKE '%${row_2}%'` : `LOWER(${column_2}) LIKE LOWER('%${row_2}%')`};
+  `;
+
+  pool.query(query)
+    .then((results) => {
+      res.header({
+        'Content-type': 'application/json'
+      });
+      res.send(results.rows);  // Send the query results
+    })
+    .catch((error) => {
+      console.error('Error executing query:', error);
+      res.status(500).send('Server error');
+    });
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////// MISC /////////////////////////////////////
+
+app.get('/getPrimaryKey', (req, res) => {
+  const table_name = req.query.table_name;
+
+  const primaryKeyQuery = `
+    SELECT kcu.column_name
+    FROM information_schema.table_constraints tc 
+    JOIN information_schema.key_column_usage kcu
+    ON tc.constraint_name = kcu.constraint_name
+    WHERE tc.table_name = $1 AND tc.constraint_type = 'PRIMARY KEY';
+  `;
+
+  pool.query(primaryKeyQuery, [table_name])
+    .then((results) => {
+      if (results.rows.length === 0) {
+        return res.status(400).send('Primary key not found for the specified table.');
+      }
+      res.header({
+        'Content-type': 'application/json'
+      });
+      res.send({ primary_key: results.rows[0].column_name });
+    })
+    .catch((error) => {
+      console.error('Error executing query:', error);
+      res.status(500).send('Server error');
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

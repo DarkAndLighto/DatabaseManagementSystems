@@ -1,0 +1,24 @@
+.search-bar {
+    display: flex;
+    text-align: center;
+}
+
+.search-bar input{
+    border-style: solid;
+    border-color: white;
+    border-radius: 12px;
+    width: 100%;
+    text-align: center;
+}
+.search-bar input:focus{
+    outline: none;
+    box-shadow: 0 0 20px #719ECE;
+}
+
+.search-bar button{
+    width: 100%;
+    height: 100%;
+}
+.select_dropdown{
+    width: 100%;
+}

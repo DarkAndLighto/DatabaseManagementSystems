@@ -6,18 +6,13 @@ CREATE TABLE users (
     date_of_birth DATE NOT NULL
 );
 
-SELECT * from contact_information;
-
 CREATE TABLE contact_information (
     contact_id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-    phone_number INT NOT NULL,
+    phone_number VARCHAR(11) NOT NULL UNIQUE,
     address VARCHAR(100) NOT NULL,
     email VARCHAR(50) NOT NULL UNIQUE
 );
-
-ALTER TABLE contact_information
-ALTER COLUMN phone_number TYPE integer USING phone_number::integer;
 
 CREATE TABLE hospital (
     hospital_id SERIAL PRIMARY KEY,
@@ -48,18 +43,21 @@ CREATE TABLE patient(
 CREATE TABLE emergency_contact(
     em_con_id SERIAL PRIMARY KEY,
     patient_id INT REFERENCES patient(patient_id) ON DELETE CASCADE,
-    name VARCHAR(30) NOT NULL,
+    first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
+    gender CHAR(1) CHECK (gender IN ('M', 'F')) NOT NULL,
+    date_of_birth DATE NOT NULL,
     relationship VARCHAR(30) NOT NULL,
-    phone_number VARCHAR(30) NOT NULL UNIQUE,
-    email VARCHAR(30) UNIQUE
+    phone_number VARCHAR(11) NOT NULL UNIQUE,
+    address VARCHAR(100) NOT NULL,
+    email VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE insurance(
     insurance_id SERIAL PRIMARY KEY,
     patient_id INT REFERENCES patient(patient_id) ON DELETE CASCADE,
     insurance_provider VARCHAR(30) NOT NULL,
-    policy_number INT NOT NULL,
+    policy_number VARCHAR(5) NOT NULL CHECK (length(policy_number) = 5),
     coverage_amount INT NOT NULL
 );
 

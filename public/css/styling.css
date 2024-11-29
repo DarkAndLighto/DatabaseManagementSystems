@@ -44,6 +44,18 @@ body {
     margin-top: 12px;
 }
 
+.padding-all{
+    padding: 12px;
+}
+.padding-horizontal{
+    padding-left: 12px;
+    padding-right: 12px;
+}
+.padding-vertical{
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
 .button-basics{
     border-style: solid;
     border-radius: 12px;

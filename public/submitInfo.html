@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styling.css" type="text/css">
+    <link rel="stylesheet" href="css/patientProfile.css" type="text/css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="index.html">Home</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">              
+              <a class="nav-link active" aria-current="page" href="newCustomer.html?mode=add">Register</a>
+              <a class="nav-link active" aria-current="page" href="patientList.html">Patient List</a>
+              <a class="nav-link active" aria-current="page" href="viewTables.html">View Tables</a>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class="container margin-top" style="max-width: 80%;">
+        <div class="blurry-box padding-all" id="add-to-me">
+
+            <!-- The made elements here -->
+            
+
+            <div class="row input-box-submit">
+                <div class="col-12">
+                    <button class="button-basics" id="submit-button" onclick="SelectMode(0)">Add new user</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <script>
+        let params = new URLSearchParams(window.location.search);
+        let button = document.getElementById('submit-button');
+        let param = 'mode';
+        let user_id = 0; //this will need to be identified based on the page (in the if statement in SelectMode())
+        SelectMode(1);
+
+        function SelectMode(stopMe)
+        {
+            if (params.get(param).startsWith('new_emergency_contact'))
+            {
+                button.innerHTML = "Add new emergency contact";
+                user_id = params.get(param).replace('new_emergency_contact', '');
+                if (stopMe === 1)
+                {
+                    SetUpFields('Please enter first name', 'first_name', 'Name');
+                    SetUpFields('Please enter last name', 'last_name', 'Last Name');
+                    SetUpFields('Please enter gender', 'gender', 'M, F');
+                    SetUpFields('Please enter relationship', 'relationship', 'Mother, father, sibling, etc...');
+                    SetUpFields('Please enter date of birth', 'date_birth', '12/31/1900');
+                    SetUpFields('Please enter phone number', 'phone_number', '+963 XXXXXXX');
+                    SetUpFields('Please enter address', 'address', 'Aleppo/Shahaba');
+                    SetUpFields('Please enter email', 'email', 'fname_lname@gmail.com');
+                } 
+                if (stopMe === 0)
+                {
+                    Addnew_emergency_contact();
+                }
+            }
+            if (params.get(param).startsWith('new_insurance'))
+            {
+                button.innerHTML = "Add new insurance";
+                user_id = params.get(param).replace('new_insurance', '');
+                if (stopMe === 1)
+                {
+                    SetUpFields('Please enter the name of the Insurance Provide', 'insurance_provider', 'Name');
+                    SetUpFields('Please enter the policy number', 'policy_number', '555 XXX');
+                    SetUpFields('Please enter the coverage amount', 'coverage_amount', 'Amount covered');
+                } 
+                if (stopMe === 0)
+                {
+                    AddNewInsurance();
+                }
+            }
+
+            if (params.get(param).startsWith('update_emergency_contact'))
+            {
+                button.innerHTML = "Update emergency contact";
+                let em_con_id = params.get(param).replace('update_emergency_contact', '');
+                let patient_id = params.get('patient'); // Directly get the patient_id
+                if (stopMe === 1)
+                {
+                    FillRowsForEmCon(em_con_id, patient_id);
+                    SetUpFields('Please enter first name', 'first_name', 'Name');
+                    SetUpFields('Please enter last name', 'last_name', 'Last Name');
+                    SetUpFields('Please enter gender', 'gender', 'M, F');
+                    SetUpFields('Please enter relationship', 'relationship', 'Mother, father, sibling, etc...');
+                    SetUpFields('Please enter date of birth', 'date_birth', '12/31/1900');
+                    SetUpFields('Please enter phone number', 'phone_number', '+963 XXXXXXX');
+                    SetUpFields('Please enter address', 'address', 'Aleppo/Shahaba');
+                    SetUpFields('Please enter email', 'email', 'fname_lname@gmail.com');
+                }
+                if (stopMe === 0)
+                {
+                    update_emergency_contact(em_con_id, patient_id);
+                }
+            }
+        }
+
+        function Addnew_emergency_contact()
+        {
+            let first_name      = document.getElementById('first_name').value;
+            let last_name       = document.getElementById('last_name').value;
+            let gender          = document.getElementById('gender').value;
+            let relationship    = document.getElementById('relationship').value;
+            let date_birth      = document.getElementById('date_birth').value;
+            let phone_number    = document.getElementById('phone_number').value;
+            let address         = document.getElementById('address').value;
+            let email           = document.getElementById('email').value;
+
+            fetch(`/newRecord?&table_name="emergency_contact"&patient_id=${user_id}&first_name=${first_name}&last_name=${last_name}&gender=${gender}&date_of_birth=${date_birth}&relationship=${relationship}&phone_number=${phone_number}&address=${address}&email=${email}`)
+            .then(response => response.json())
+            .then (data => {
+                window.location.href = `http://localhost:5000/patientProfile.html?id=${user_id}`;
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function AddNewInsurance()
+        {
+            let insurance_provider = document.getElementById('insurance_provider').value;
+            let policy_number = document.getElementById('policy_number').value;
+            let coverage_amount = document.getElementById('coverage_amount').value;
+
+            fetch(`/newRecord?&table_name="insurance"&patient_id=${user_id}&insurance_provider=${insurance_provider}&policy_number=${policy_number}&coverage_amount=${coverage_amount}`)
+            .then(response => response.json())
+            .then (data => {
+                window.location.href = `http://localhost:5000/patientProfile.html?id=${user_id}`;
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function update_emergency_contact(em_con_id, patient_id)
+        {
+            let first_name      = document.getElementById('first_name').value;
+            let last_name       = document.getElementById('last_name').value;
+            let gender          = document.getElementById('gender').value;
+            let relationship    = document.getElementById('relationship').value;
+            let date_birth      = document.getElementById('date_birth').value;
+            let phone_number    = document.getElementById('phone_number').value;
+            let address         = document.getElementById('address').value;
+            let email           = document.getElementById('email').value;
+
+            fetch(`/updateRecord?&table_name="emergency_contact"&column="em_con_id"&row=${em_con_id}&first_name=${first_name}&last_name=${last_name}&gender=${gender}&date_of_birth=${date_birth}&relationship=${relationship}&phone_number=${phone_number}&address=${address}&email=${email}`)
+            .then(response => response.json())
+            .then (data => {
+                window.location.href = `http://localhost:5000/patientProfile.html?id=${patient_id}`;
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function FillRowsForEmCon(em_con_id, patient_id) 
+        {
+            fetch(`/getRowFromTable?&table_name="emergency_contact"&column="em_con_id"&row=${em_con_id}`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(emCon => {
+                    if (Number(emCon.em_con_id) === Number(em_con_id)) {
+                        document.getElementById('first_name').value = emCon.first_name.trim();
+                        document.getElementById('last_name').value = emCon.last_name.trim();
+                        document.getElementById('gender').value = emCon.gender.trim();
+                        document.getElementById('relationship').value = emCon.relationship.trim();
+                        document.getElementById('date_birth').value = emCon.date_of_birth.trim();
+                        document.getElementById('phone_number').value = emCon.phone_number.trim();
+                        document.getElementById('address').value = emCon.address.trim();
+                        document.getElementById('email').value = emCon.email.trim();
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function SetUpFields(labelText, inputId, placeholderText) 
+        {
+            const container = document.getElementById('add-to-me');
+
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'row input-box-row';
+
+            const colDiv = document.createElement('div');
+            colDiv.className = 'col-12';
+
+            const label = document.createElement('label');
+            label.style.marginBottom = '4px';
+            label.innerHTML = `• ${labelText}`;
+
+            const formFloatingDiv = document.createElement('div');
+            formFloatingDiv.className = 'form-floating input-form';
+            formFloatingDiv.style.color = "gray";
+
+            const input = document.createElement('input');
+            input.required = true;
+            input.className = 'form-control';
+            input.id = inputId;
+            input.placeholder = placeholderText;
+
+            const floatingLabel = document.createElement('label');
+            floatingLabel.htmlFor = inputId;
+            floatingLabel.innerHTML = placeholderText;
+
+            formFloatingDiv.appendChild(input);
+            formFloatingDiv.appendChild(floatingLabel);
+            colDiv.appendChild(label);
+            colDiv.appendChild(formFloatingDiv);
+            rowDiv.appendChild(colDiv);
+            container.appendChild(rowDiv);
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+</body>
+
+</html>

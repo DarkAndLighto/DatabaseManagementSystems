@@ -15,15 +15,15 @@
 
     <nav class="navbar navbar-expand-sm bg-body-tertiary">
         <div class="container-fluid">
-          <a class="navbar-brand" href="index.html">Navbar</a>
+          <a class="navbar-brand" href="index.html">Home</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <!-- <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
-              </li> -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">              
+              <a class="nav-link active" aria-current="page" href="newCustomer.html?mode=add">Register</a>
+              <a class="nav-link active" aria-current="page" href="patientList.html">Patient List</a>
+              <a class="nav-link active" aria-current="page" href="viewTables.html">View Tables</a>
             </ul>
           </div>
         </div>
@@ -65,8 +65,26 @@
                 </div>
             </div>
 
+            <div class="col-sm-12 col-md-4">
+                <div class="blurry-box action-box">
+                    <div class="action-row-1">
+                        <p>
+                            View all lists (view mode)
+                        </p>
+                    </div>
+                    <div class="action-row-button">
+                        <a href="viewTables.html">
+                            <button class="button-basics">
+                                View all lists
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
 </body>

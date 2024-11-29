@@ -15,15 +15,17 @@
 
     <nav class="navbar navbar-expand-sm bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">Navbar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0"> </ul>
-            </div>
+          <a class="navbar-brand" href="index.html">Home</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">              
+              <a class="nav-link active" aria-current="page" href="newCustomer.html?mode=add">Register</a>
+              <a class="nav-link active" aria-current="page" href="patientList.html">Patient List</a>
+              <a class="nav-link active" aria-current="page" href="viewTables.html">View Tables</a>
+            </ul>
+          </div>
         </div>
     </nav>
 
@@ -41,13 +43,13 @@
                     <button id="dropdownOptions" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
                     <ul class="dropdown-menu">
                         <li><button class="dropdown-item" onclick="ChangeDropdown('u.user_id', 'ID')">ID</button></li>
-                        <li><button class="dropdown-item" onclick="ChangeDropdown('u.first_name', 'first name')">first name</button></li>
-                        <li><button class="dropdown-item" onclick="ChangeDropdown('u.last_name', 'last name')">last name</button></li>
-                        <li><button class="dropdown-item" onclick="ChangeDropdown('u.gender', 'gender')">gender</button></li>
-                        <li><button class="dropdown-item" onclick="ChangeDropdown('u.date_of_birth', 'date of birth')">date of birth</button></li>
-                        <li><button class="dropdown-item" onclick="ChangeDropdown('c.phone_number', 'phone number')">phone number</button></li>
-                        <li><button class="dropdown-item" onclick="ChangeDropdown('c.address', 'address')">address</button></li>
-                        <li><button class="dropdown-item" onclick="ChangeDropdown('c.email', 'email')">email</button></li>
+                        <li><button class="dropdown-item" onclick="ChangeDropdown('u.first_name', 'First name')">First name</button></li>
+                        <li><button class="dropdown-item" onclick="ChangeDropdown('u.last_name', 'Last name')">Last name</button></li>
+                        <li><button class="dropdown-item" onclick="ChangeDropdown('u.gender', 'Gender')">Gender</button></li>
+                        <li><button class="dropdown-item" onclick="ChangeDropdown('u.date_of_birth', 'Date of birth')">Date of birth</button></li>
+                        <li><button class="dropdown-item" onclick="ChangeDropdown('c.phone_number', 'Phone number')">Phone number</button></li>
+                        <li><button class="dropdown-item" onclick="ChangeDropdown('c.address', 'Address')">Address</button></li>
+                        <li><button class="dropdown-item" onclick="ChangeDropdown('c.email', 'Email')">Email</button></li>
                     </ul>
                 </div>
                 <input id="searchBar" placeholder="Search for something!">
@@ -122,6 +124,11 @@
         window.location.href= `newCustomer.html?mode=edit${userID}`;
     }
 
+    function ViewProfile(userID)
+    {
+        window.location.href= `patientProfile.html?id=${userID}`;
+    }
+
     function SearchUsers() {
         let queryText = document.getElementById('searchBar').value;
         let queryType = document.getElementById('dropdownOptions').value;
@@ -165,6 +172,7 @@
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
                 <ul class="dropdown-menu">
+                    <li><button class="dropdown-item" data-user-id="${user.user_id}" onclick="ViewProfile(${user.user_id})">View Profile</button></li>
                     <li><button class="dropdown-item" data-user-id="${user.user_id}" onclick="DeleteRow(${user.user_id})">Delete</button></li>
                     <li><button class="dropdown-item" data-user-id="${user.user_id}" onclick="EditRow(${user.user_id})">Edit</button></li>
                 </ul>

@@ -1,10 +1,3 @@
-DELETE FROM users
-WHERE user_id = 12;
-
-SELECT * FROM patient;
-SELECT * FROM users;
-SELECT * FROM contact_information;
-
 SELECT
     *
 FROM
@@ -22,18 +15,15 @@ ORDER BY
 WHERE
     lower(u.user_id) = 16;
 
-UPDATE 
-    users
-SET
-    first_name = 'C',
-    last_name = 'C'
-WHERE
-    user_id = 16;
+SELECT * from emergency_contact;
 
-UPDATE 
-    contact_information
-SET
-    phone_number = 1555
-WHERE
-    user_id = 16;
 
+
+
+SELECT * FROM emergency_contact c
+INNER JOIN patient p
+ON c.patient_id = p.patient_id
+WHERE p.patient_id = 42;
+
+INSERT INTO insurance (patient_id, insurance_provider, policy_number, coverage_amount)
+VALUES (16, 'me', '55555', 155000);
