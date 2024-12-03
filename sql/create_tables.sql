@@ -46,7 +46,7 @@ CREATE TABLE emergency_contact(
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     gender CHAR(1) CHECK (gender IN ('M', 'F')) NOT NULL,
-    date_of_birth DATE NOT NULL,
+    date_of_birth DATE NOT NULL CHECK (date_of_birth <= CURRENT_DATE),
     relationship VARCHAR(30) NOT NULL,
     phone_number VARCHAR(11) NOT NULL UNIQUE,
     address VARCHAR(100) NOT NULL,
@@ -94,11 +94,13 @@ CREATE TABLE appointments(
     appointment_id SERIAL PRIMARY KEY,
     patient_id INT REFERENCES patient(patient_id) ON DELETE CASCADE,
     doctor_id INT REFERENCES doctors(doctor_id) ON DELETE CASCADE,
-    payment_id INT REFERENCES payments(payment_id) ON DELETE CASCADE,
-    date VARCHAR(255) NOT NULL,
-    description VARCHAR(255),
+    app_date data NOT NULL CHECK (app_date > CURRENT_DATE),
     app_status char(2) CHECK (app_status IN ('SC', 'CO', 'CA'))
 );
+
+select * from appointments;
+ALTER TABLE appointments
+ADD CONSTRAINT app_date CHECK (app_date > CURRENT_DATE);
 
 CREATE TABLE payments(
     payment_id SERIAL PRIMARY KEY,

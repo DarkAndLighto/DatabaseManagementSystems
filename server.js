@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 /// Get Combined Data
 app.get('/combinedData', (req, res) => {
   const query = `
-    SELECT 
+    SELECT
       u.user_id,
       u.first_name, 
       u.last_name, 
@@ -44,12 +44,16 @@ app.get('/combinedData', (req, res) => {
       c.phone_number, 
       c.address, 
       c.email
-    FROM 
+    FROM
       users u
-    JOIN 
+    JOIN
       contact_information c
-    ON 
+    ON
       u.user_id = c.user_id
+    JOIN
+      patient p
+    ON
+      p.patient_id = c.user_id
     ORDER BY
       u.user_id;
   `;
@@ -263,6 +267,49 @@ app.get('/newEmCon', (req, res) => {
     res.status(500).send('Server error');
   });
 })
+
+
+
+
+
+
+
+
+///////////////////// BOOK APPOINTMENT PAGE ////////////////////////////
+
+
+app.get('/bookNewAppointment', (req, res) => {
+  console.log(`===== Adding new appointment`);
+  let patient_id = req.query.patient_id;
+  let doctor_id = req.query.doctor_id;
+  let app_date = req.query.app_date;
+  let app_status = req.query.app_status;
+
+  console.log(`===== Adding new appointment patient_id ${patient_id} doctor_id ${doctor_id} app_date ${app_date} app_status ${app_status}`);
+  query = 
+  `
+    INSERT INTO appointments (patient_id, doctor_id, app_date, app_status)
+    VALUES (${patient_id}, ${doctor_id}, '${app_date}', '${app_status}');
+  `
+
+  pool.query(query)
+  .then(() => {
+    res.header({
+      'Content-type': 'application/json'
+    });
+    res.send({ success: true });
+  })
+  .catch((error) => {
+    console.error('Error executing query:', error);
+    res.status(500).send('Server error');
+  });
+})
+
+
+
+
+
+
 
 
 
@@ -575,6 +622,66 @@ app.get('/searchRowsTwoConditionsFromTable', (req, res) => {
     });
 })
 
+app.get('/searchRowsOneConditionFromThreeTables', (req, res) => {
+  let table_1 = req.query.table_1;
+  let table_2 = req.query.table_2;
+  let table_3 = req.query.table_3;
+  let join_column_1 = req.query.join_column_1;
+  let join_column_2 = req.query.join_column_2;
+  let join_column_3 = req.query.join_column_3;
+  let column_1 = req.query.column_1;
+  let row_1 = req.query.row_1;
+
+  console.log(`===== searchRowsOneConditionFromThreeTables: We are joining table_1 ${table_1} with table_2 ${table_2} on join_column_1 ${join_column_1} and table_3 ${table_3} on join_column_2 ${join_column_2}`);
+  console.log(`==THEN=== filtering based on column_1 ${column_1} and row_1 ${row_1}`);
+
+  let query = 
+  `
+    SELECT 
+      *
+    FROM 
+      ${table_1} t1
+    JOIN
+      ${table_2} t2
+    ON
+      t1.${join_column_1} = t2.${join_column_2}
+    JOIN
+      ${table_3} t3
+    ON
+      t1.${join_column_1} = t3.${join_column_3}
+    WHERE 
+      ${column_1} = ${row_1}; 
+  `
+
+  pool.query(query)
+    .then((results) => {
+      res.header({
+        'Content-type': 'application/json'
+      });
+      res.send(results.rows);  // Send the query results
+    })
+    .catch((error) => {
+      console.error('Error executing query:', error);
+      res.status(500).send('Server error');
+    });
+})
+
+/* 
+SELECT 
+    *
+FROM 
+    users u
+JOIN
+    doctors d
+ON
+    u.user_id = d.doctor_id
+JOIN
+    contact_information c
+ON
+    u.user_id = c.user_id
+WHERE 
+    department_id = 2; 
+*/
 
 
 

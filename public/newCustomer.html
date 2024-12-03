@@ -171,6 +171,7 @@
 
         function AddNewUser(first_name, last_name, gender, date_birth, phone_number, address, email)
         {
+            //We are dictating the the occupation is "Patient" in the fetch itself in the server
             fetch(`/addNewUser?
             &first_name=${first_name}
             &last_name=${last_name}

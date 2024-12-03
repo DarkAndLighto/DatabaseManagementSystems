@@ -40,7 +40,8 @@
                     <button class="button-basics" id="submit-button" onclick="SelectMode(0)">Add new user</button>
                 </div>
             </div>
-
+            
+            <div id="error-message"> S </div>
         </div>
     </div>
     
@@ -129,7 +130,10 @@
             .then (data => {
                 window.location.href = `http://localhost:5000/patientProfile.html?id=${user_id}`;
             })
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => {
+                getElementById('error-message').innerHTML = error;
+                console.error('Error fetching data:', error) 
+            });
         }
 
         function AddNewInsurance()
@@ -159,10 +163,13 @@
 
             fetch(`/updateRecord?&table_name="emergency_contact"&column="em_con_id"&row=${em_con_id}&first_name=${first_name}&last_name=${last_name}&gender=${gender}&date_of_birth=${date_birth}&relationship=${relationship}&phone_number=${phone_number}&address=${address}&email=${email}`)
             .then(response => response.json())
-            .then (data => {
+            .then (data => { 
                 window.location.href = `http://localhost:5000/patientProfile.html?id=${patient_id}`;
             })
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => {
+                document.getElementById('error-message').innerHTML = error;
+                console.error('Error fetching data:', error) 
+            });
         }
 
         function FillRowsForEmCon(em_con_id, patient_id) 
@@ -171,12 +178,13 @@
             .then(response => response.json())
             .then(data => {
                 data.forEach(emCon => {
+                    let dateOfBirth = new Date(emCon.date_of_birth).toLocaleDateString();
                     if (Number(emCon.em_con_id) === Number(em_con_id)) {
                         document.getElementById('first_name').value = emCon.first_name.trim();
                         document.getElementById('last_name').value = emCon.last_name.trim();
                         document.getElementById('gender').value = emCon.gender.trim();
                         document.getElementById('relationship').value = emCon.relationship.trim();
-                        document.getElementById('date_birth').value = emCon.date_of_birth.trim();
+                        document.getElementById('date_birth').value = dateOfBirth.trim();
                         document.getElementById('phone_number').value = emCon.phone_number.trim();
                         document.getElementById('address').value = emCon.address.trim();
                         document.getElementById('email').value = emCon.email.trim();

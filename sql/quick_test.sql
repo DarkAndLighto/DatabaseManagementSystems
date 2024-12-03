@@ -15,15 +15,23 @@ ORDER BY
 WHERE
     lower(u.user_id) = 16;
 
-SELECT * from emergency_contact;
 
 
+//Add department
+INSERT INTO departments (hospital_id, manager_id, name, description, phone_number)
+VALUES (1, 67, 'Phlebotomy', 'The place where blood is drawn from patients for laboratory testing, transfusions, donations, or research purposes', 412531423);
 
-
-SELECT * FROM emergency_contact c
-INNER JOIN patient p
-ON c.patient_id = p.patient_id
-WHERE p.patient_id = 42;
-
-INSERT INTO insurance (patient_id, insurance_provider, policy_number, coverage_amount)
-VALUES (16, 'me', '55555', 155000);
+SELECT 
+    *
+FROM 
+    users u
+JOIN
+    doctors d
+ON
+    d.doctor_id = u.user_id
+JOIN
+    contact_information c
+ON
+    u.user_id = c.user_id
+WHERE 
+    department_id = 2;

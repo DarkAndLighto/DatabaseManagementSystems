@@ -168,26 +168,26 @@
         const tr = document.createElement('tr');
         tr.innerHTML = 
         `
-        <td>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
-                <ul class="dropdown-menu">
-                    <li><button class="dropdown-item" data-user-id="${user.user_id}" onclick="ViewProfile(${user.user_id})">View Profile</button></li>
-                    <li><button class="dropdown-item" data-user-id="${user.user_id}" onclick="DeleteRow(${user.user_id})">Delete</button></li>
-                    <li><button class="dropdown-item" data-user-id="${user.user_id}" onclick="EditRow(${user.user_id})">Edit</button></li>
-                </ul>
-            </div>
-        </td>
+            <td>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                    <ul class="dropdown-menu">
+                        <li><button class="dropdown-item" data-user-id="${user.user_id}" onclick="ViewProfile(${user.user_id})">View Profile</button></li>
+                        <li><button class="dropdown-item" data-user-id="${user.user_id}" onclick="DeleteRow(${user.user_id})">Delete</button></li>
+                        <li><button class="dropdown-item" data-user-id="${user.user_id}" onclick="EditRow(${user.user_id})">Edit</button></li>
+                    </ul>
+                </div>
+            </td>
 
-        <td scope="row">${count}</td>
-        <td class='table-success'>${user.user_id}</td>
-        <td>${user.first_name}</td>
-        <td>${user.last_name}</td>
-        <td>${user.gender}</td>
-        <td>${dateOfBirth}</td>
-        <td>${user.phone_number}</td>
-        <td>${user.address}</td>
-        <td>${user.email}</td>
+            <td scope="row">${count}</td>
+            <td class='table-success'>${user.user_id}</td>
+            <td>${user.first_name}</td>
+            <td>${user.last_name}</td>
+            <td>${user.gender}</td>
+            <td>${dateOfBirth}</td>
+            <td>${user.phone_number}</td>
+            <td>${user.address}</td>
+            <td>${user.email}</td>
         `;
 
         userList.appendChild(tr);

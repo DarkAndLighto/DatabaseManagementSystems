@@ -29,10 +29,10 @@
           </div>
         </div>
     </nav>
-
     <div class="container margin-top">
         <div class="row">
             <div class="blurry-box">
+                <div style="font-size: 65px; text-align: center;">💚💚💚🤍❤️🤍❤️🤍❤️🤍🖤🖤🖤</div>
                 <div class="col">
                     <div class="dropdown">
                         <button id="dropdown-table" class="btn btn-secondary dropdown-toggle select_dropdown margin-top" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -42,6 +42,9 @@
                             <li><button class="dropdown-item " onclick="FillTable('users')">Users</button></li>
                             <li><button class="dropdown-item" onclick="FillTable('contact_information')">Contact Information</button></li>
                             <li><button class="dropdown-item" onclick="FillTable('patient')">Patients</button></li>
+                            <li><button class="dropdown-item" onclick="FillTable('managers')">Managers</button></li>
+                            <li><button class="dropdown-item" onclick="FillTable('doctors')">Doctors</button></li>
+                            <li><button class="dropdown-item" onclick="FillTable('departments')">Departments</button></li>
                             <li><button class="dropdown-item" onclick="FillTable('emergency_contact')">Emergency contacts</button></li>
                             <li><button class="dropdown-item" onclick="FillTable('insurance')">Insurance</button></li>
                         </ul>
@@ -69,21 +72,17 @@
                 </div>
                 
                 <div class="col" style="width: 100%;">
-                    
                     <div class="row margin-top">
-                        <div class="col">
-                            <table class="table table-striped table-hover table-borderless">
-                                <thead id="thead">
-
-                                </thead>
-                                
-                                <tbody id="tbody">
-                                    
-                                </tbody>
-                            </table>
-                        </div>
+                        <table class="table table-striped table-hover table-borderless">
+                            <thead id="thead">
+                
+                            </thead>
+                
+                            <tbody id="tbody">
+                
+                            </tbody>
+                        </table>
                     </div>
-
                 </div>
             </div>
         </div>
