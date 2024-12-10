@@ -15,11 +15,11 @@ ORDER BY
 WHERE
     lower(u.user_id) = 16;
 
-
+SELECT * FROM managers;
 
 //Add department
 INSERT INTO departments (hospital_id, manager_id, name, description, phone_number)
-VALUES (1, 67, 'Phlebotomy', 'The place where blood is drawn from patients for laboratory testing, transfusions, donations, or research purposes', 412531423);
+VALUES (1, 74, 'Dermatology', 'the medical discipline that is concerned with the diagnosis and treatment of diseases of the skin, hair, and nails in both children and adults.', 963531423);
 
 SELECT 
     *
@@ -35,3 +35,10 @@ ON
     u.user_id = c.user_id
 WHERE 
     department_id = 2;
+
+SELECT * FROM appointments a
+JOIN payments p
+ON a.appointment_id = p.appointment_id
+JOIN patient
+ON patient.patient_id = a.patient_id
+WHERE patient.patient_id = 16;

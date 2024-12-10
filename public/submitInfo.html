@@ -52,14 +52,12 @@
         let user_id = 0; //this will need to be identified based on the page (in the if statement in SelectMode())
         SelectMode(1);
 
-        function SelectMode(stopMe)
+        function SelectMode(stopMe) 
         {
-            if (params.get(param).startsWith('new_emergency_contact'))
-            {
+            if (params.get(param).startsWith('new_emergency_contact')) {
                 button.innerHTML = "Add new emergency contact";
                 user_id = params.get(param).replace('new_emergency_contact', '');
-                if (stopMe === 1)
-                {
+                if (stopMe === 1) {
                     SetUpFields('Please enter first name', 'first_name', 'Name');
                     SetUpFields('Please enter last name', 'last_name', 'Last Name');
                     SetUpFields('Please enter gender', 'gender', 'M, F');
@@ -69,34 +67,29 @@
                     SetUpFields('Please enter address', 'address', 'Aleppo/Shahaba');
                     SetUpFields('Please enter email', 'email', 'fname_lname@gmail.com');
                 } 
-                if (stopMe === 0)
-                {
+                if (stopMe === 0) {
                     Addnew_emergency_contact();
                 }
             }
-            if (params.get(param).startsWith('new_insurance'))
-            {
+
+            if (params.get(param).startsWith('new_insurance')) {
                 button.innerHTML = "Add new insurance";
                 user_id = params.get(param).replace('new_insurance', '');
-                if (stopMe === 1)
-                {
-                    SetUpFields('Please enter the name of the Insurance Provide', 'insurance_provider', 'Name');
+                if (stopMe === 1) {
+                    SetUpFields('Please enter the name of the Insurance Provider', 'insurance_provider', 'Name');
                     SetUpFields('Please enter the policy number', 'policy_number', '555 XXX');
                     SetUpFields('Please enter the coverage amount', 'coverage_amount', 'Amount covered');
                 } 
-                if (stopMe === 0)
-                {
+                if (stopMe === 0) {
                     AddNewInsurance();
                 }
             }
 
-            if (params.get(param).startsWith('update_emergency_contact'))
-            {
+            if (params.get(param).startsWith('update_emergency_contact')) {
                 button.innerHTML = "Update emergency contact";
                 let em_con_id = params.get(param).replace('update_emergency_contact', '');
                 let patient_id = params.get('patient'); // Directly get the patient_id
-                if (stopMe === 1)
-                {
+                if (stopMe === 1) {
                     FillRowsForEmCon(em_con_id, patient_id);
                     SetUpFields('Please enter first name', 'first_name', 'Name');
                     SetUpFields('Please enter last name', 'last_name', 'Last Name');
@@ -107,9 +100,23 @@
                     SetUpFields('Please enter address', 'address', 'Aleppo/Shahaba');
                     SetUpFields('Please enter email', 'email', 'fname_lname@gmail.com');
                 }
-                if (stopMe === 0)
-                {
+                if (stopMe === 0) {
                     update_emergency_contact(em_con_id, patient_id);
+                }
+            }
+
+            if (params.get(param).startsWith('update_insurance')) {
+                button.innerHTML = "Update insurance";
+                let insurance_id = params.get(param).replace('update_insurance', '');
+                let patient_id = params.get('patient'); // Directly get the patient_id
+                if (stopMe === 1) {
+                    FillRowsForInsurance(insurance_id);
+                    SetUpFields('Please enter the name of the Insurance Provider', 'insurance_provider', 'Name');
+                    SetUpFields('Please enter the policy number', 'policy_number', '555 XXX');
+                    SetUpFields('Please enter the coverage amount', 'coverage_amount', 'Amount covered');
+                }
+                if (stopMe === 0) {
+                    update_insurance(insurance_id, patient_id);
                 }
             }
         }
@@ -229,6 +236,40 @@
             rowDiv.appendChild(colDiv);
             container.appendChild(rowDiv);
         }
+    
+        function FillRowsForInsurance(insurance_id) 
+        {
+            fetch(`/getRowFromTable?&table_name="insurance"&column="insurance_id"&row=${insurance_id}`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(ins => {
+                    if (Number(ins.insurance_id) === Number(insurance_id)) {
+                        document.getElementById('insurance_provider').value = ins.insurance_provider.trim();
+                        document.getElementById('policy_number').value = ins.policy_number.trim();
+                        document.getElementById('coverage_amount').value = ins.coverage_amount;
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function update_insurance(insurance_id, patient_id) 
+        {
+            let insurance_provider = document.getElementById('insurance_provider').value;
+            let policy_number = document.getElementById('policy_number').value;
+            let coverage_amount = document.getElementById('coverage_amount').value;
+
+            fetch(`/updateRecord?&table_name="insurance"&column="insurance_id"&row=${insurance_id}&insurance_provider=${insurance_provider}&policy_number=${policy_number}&coverage_amount=${coverage_amount}`)
+            .then(response => response.json())
+            .then(data => { 
+                window.location.href = `http://localhost:5000/patientProfile.html?id=${patient_id}`;
+            })
+            .catch(error => {
+                document.getElementById('error-message').innerHTML = error;
+                console.error('Error fetching data:', error) 
+            });
+        }
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>

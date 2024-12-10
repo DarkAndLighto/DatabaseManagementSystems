@@ -71,7 +71,6 @@ app.get('/combinedData', (req, res) => {
     });
 });
 
-
 /// Adds new user
 /// Adds new user
 app.get('/addNewUser', (req, res) => {
@@ -108,8 +107,6 @@ app.get('/addNewUser', (req, res) => {
   });
 });
 
-
-
 /// Gets search results
 app.get('/searchResults', (req, res) => {
   const queryText = req.query.queryText;
@@ -120,20 +117,17 @@ app.get('/searchResults', (req, res) => {
 
   const query = `
   SELECT
-      u.user_id,
-      u.first_name,
-      u.last_name,
-      u.gender,
-      u.date_of_birth,
-      c.phone_number,
-      c.address,
-      c.email
+    *
   FROM
-      users u
+    users u
   JOIN
-      contact_information c
+    contact_information c
   ON
-      u.user_id = c.user_id
+    u.user_id = c.user_id
+  JOIN
+    patient p
+  ON
+    u.user_id = p.patient_id
   WHERE
       ${isNumeric ? `CAST(${queryType} AS TEXT) LIKE '%${queryText}%'` : `LOWER(${queryType}) LIKE LOWER('%${queryText}%')`};
   `;
@@ -224,6 +218,10 @@ app.delete('/deletePatient', (req, res) => {
 
 
 
+
+
+
+
 ///////////////////// PATIENT PROFILE PAGE ////////////////////////////
 
 
@@ -268,6 +266,91 @@ app.get('/newEmCon', (req, res) => {
   });
 })
 
+app.get('/addBalanceToPatient', (req, res) => {
+  let amount = req.query.amount;
+  let patient_id = req.query.patient_id;
+
+  console.log(`===== Chaing account balance of user ${patient_id} by ${amount}`);
+  
+  const query =
+  `
+    UPDATE patient
+    SET balance = balance + ${amount}
+    WHERE patient_id = ${patient_id};
+  `;
+
+  pool.query(query)
+  .then((results) => {
+    res.header({
+      'Content-type': 'application/json'
+    });
+    res.send(results.rows);  // Send the query results
+  })
+  .catch((error) => {
+    console.error('Error executing query:', error);
+    res.status(500).send('Server error');
+  });
+})
+
+app.get('/getAppointmentsAndPayments', (req, res) => {
+  let patient_id = req.query.patient_id;
+
+  let query = `
+    SELECT * FROM appointments a
+    JOIN payments p
+    ON a.appointment_id = p.appointment_id
+    JOIN patient
+    ON patient.patient_id = a.patient_id
+    WHERE patient.patient_id = ${patient_id};
+  `;
+
+  
+  pool.query(query)
+    .then((results) => {
+      res.header({
+        'Content-type': 'application/json'
+      });
+      res.send(results.rows);  // Send the query results
+    })
+    .catch((error) => {
+      console.error('Error executing query:', error);
+      res.status(500).send('Server error');
+    });
+});
+
+app.get('/processAppointment', (req, res) => {
+  let appointment_id = req.query.appointment_id;
+
+  console.log(`===== processAppointment: appointment_id ${appointment_id}`);
+  let query = `
+    CALL process_appointment(${appointment_id});
+  `;
+
+  
+  pool.query(query)
+    .then((results) => {
+      res.header({
+        'Content-type': 'application/json'
+      });
+      res.send(results.rows);  // Send the query results
+    })
+    .catch((error) => {
+      console.error('Error executing query:', error);
+      res.status(500).send('Server error');
+    });
+})
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -284,12 +367,12 @@ app.get('/bookNewAppointment', (req, res) => {
   let doctor_id = req.query.doctor_id;
   let app_date = req.query.app_date;
   let app_status = req.query.app_status;
+  let department_name = req.query.department_name;
 
-  console.log(`===== Adding new appointment patient_id ${patient_id} doctor_id ${doctor_id} app_date ${app_date} app_status ${app_status}`);
+  console.log(`===== Adding new appointment patient_id ${patient_id} doctor_id ${doctor_id} app_date ${app_date} app_status ${app_status} department_name ${department_name}`);
   query = 
   `
-    INSERT INTO appointments (patient_id, doctor_id, app_date, app_status)
-    VALUES (${patient_id}, ${doctor_id}, '${app_date}', '${app_status}');
+    CALL book_new_appointment(${patient_id}, ${doctor_id}, '${app_date}', '${app_status}');
   `
 
   pool.query(query)
@@ -419,12 +502,13 @@ app.get('/getRowFromTable', (req, res) => {
   const column = req.query.column;
   const row = req.query.row;
 
+  const isNumeric = !isNaN(row);
   console.log(`===== getRowFromTable: Getting row: ${row} from table ${table_name} based on column ${column}`);
 
   const query = 
   `
     SELECT * FROM ${table_name}
-    WHERE ${column} = ${row};
+    WHERE ${isNumeric ? `CAST(${column} AS TEXT) LIKE '%${row}%'` : `LOWER(${column}) LIKE LOWER('%${row}%')`};
   `;
 
   pool.query(query)
@@ -535,16 +619,16 @@ app.get('/searchRowsFromTable', (req, res) => {
   `;
 
   pool.query(query)
-    .then((results) => {
-      res.header({
-        'Content-type': 'application/json'
-      });
-      res.send(results.rows);  // Send the query results
-    })
-    .catch((error) => {
-      console.error('Error executing query:', error);
-      res.status(500).send('Server error');
+  .then((results) => {
+    res.header({
+      'Content-type': 'application/json'
     });
+    res.send(results.rows);  // Send the query results
+  })
+  .catch((error) => {
+    console.error('Error executing query:', error);
+    res.status(500).send('Server error');
+  });
 });
 
 app.get('/searchRowsFromJoinedTables', (req, res) => {
@@ -637,20 +721,12 @@ app.get('/searchRowsOneConditionFromThreeTables', (req, res) => {
 
   let query = 
   `
-    SELECT 
-      *
-    FROM 
-      ${table_1} t1
-    JOIN
-      ${table_2} t2
-    ON
-      t1.${join_column_1} = t2.${join_column_2}
-    JOIN
-      ${table_3} t3
-    ON
-      t1.${join_column_1} = t3.${join_column_3}
-    WHERE 
-      ${column_1} = ${row_1}; 
+    SELECT  * FROM ${table_1} t1
+    JOIN ${table_2} t2 
+    ON t1.${join_column_1} = t2.${join_column_2}
+    JOIN ${table_3} t3
+    ON t1.${join_column_1} = t3.${join_column_3}
+    WHERE  ${column_1} = ${row_1}; 
   `
 
   pool.query(query)

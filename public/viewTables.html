@@ -39,7 +39,7 @@
                             Dropdown button
                         </button>
                         <ul class="dropdown-menu">
-                            <li><button class="dropdown-item " onclick="FillTable('users')">Users</button></li>
+                            <li><button class="dropdown-item" onclick="FillTable('users')">Users</button></li>
                             <li><button class="dropdown-item" onclick="FillTable('contact_information')">Contact Information</button></li>
                             <li><button class="dropdown-item" onclick="FillTable('patient')">Patients</button></li>
                             <li><button class="dropdown-item" onclick="FillTable('managers')">Managers</button></li>
@@ -47,6 +47,10 @@
                             <li><button class="dropdown-item" onclick="FillTable('departments')">Departments</button></li>
                             <li><button class="dropdown-item" onclick="FillTable('emergency_contact')">Emergency contacts</button></li>
                             <li><button class="dropdown-item" onclick="FillTable('insurance')">Insurance</button></li>
+                            <li><button class="dropdown-item" onclick="FillTable('appointments')">Appointments</button></li>
+                            <li><button class="dropdown-item" onclick="FillTable('payments')">Payments</button></li>
+                            <li><button class="dropdown-item" onclick="FillTable('city')">City</button></li>
+                            <li><button class="dropdown-item" onclick="FillTable('district')">District</button></li>
                         </ul>
                     </div>
 
@@ -66,7 +70,7 @@
                             <button class="button-basics" onclick="Search()">Search</button>
                         </div>
                         <div class="col-3">
-                            <button class="button-basics" onclick="ReFillTable('emergency_contact')">Clear search results</button>
+                            <button class="button-basics" onclick="ReFillTable()">Clear search results</button>
                         </div>
                     </div>
                 </div>
@@ -186,6 +190,7 @@
             table_name = document.getElementById('dropdown-table').innerHTML;
             column = document.getElementById('dropdownOptions').value;
             row = document.getElementById('searchBar').value;
+
             fetch(`/getRowFromTable?&table_name=${table_name}&column=${column}&row=${row}`)
             .then(response => response.json())
             .then(data => {
@@ -209,8 +214,9 @@
             }
         }
 
-        function ReFillTable(table_name)
+        function ReFillTable()
         {
+            let table_name = document.getElementById('dropdown-table').innerHTML;
             document.getElementById('searchBar').value = '';
             ClearTable();
             FillTable(table_name);
@@ -227,9 +233,10 @@
             document.getElementById('dropdown-table').innerHTML = newInnerHTML;
         }
     
-        function ClearSearchResults(table_name)
+        function ClearSearchResults()
         {
-            ReFillTable(table_name);
+            alert('Im being accessed');
+            ReFillTable();
         }
     </script>
 

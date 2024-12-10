@@ -37,8 +37,12 @@ CREATE TABLE district (
 );
 
 CREATE TABLE patient(
-    patient_id INT PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE
+    patient_id INT PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
+    balance INT NOT NULL DEFAULT 100 CHECK(balance >= 0)
 );
+ALTER TABLE patient
+ADD COLUMN balance INT NOT NULL DEFAULT 100 CHECK(balance >= 0);
+DROP COLUMN balance;
 
 CREATE TABLE emergency_contact(
     em_con_id SERIAL PRIMARY KEY,
@@ -104,8 +108,7 @@ ADD CONSTRAINT app_date CHECK (app_date > CURRENT_DATE);
 
 CREATE TABLE payments(
     payment_id SERIAL PRIMARY KEY,
-    date VARCHAR(255) NOT NULL,
-    method VARCHAR(30) NOT NULL,
+    appointment_id INT REFERENCES appointments(appointment_id),
     amount INT NOT NULL
 );
 

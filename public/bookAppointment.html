@@ -39,6 +39,8 @@
                         </button>
                         <ul class="dropdown-menu">
                         <li><button class="dropdown-item" onclick="ChooseDepartment('Gastroenterology', 2)">Gastroenterology</button></li>
+                        <li><button class="dropdown-item" onclick="ChooseDepartment('Phlebotomy', 3)">Phlebotomy</button></li>
+                        <li><button class="dropdown-item" onclick="ChooseDepartment('Dermatology', 4)">Dermatology</button></li>
                         </ul>
                     </div>
                 </div>
@@ -67,16 +69,20 @@
                 </div>
             </div>
             <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="department-name-input" placeholder="" disabled>
+                <label style="color: grey;" for="department-name-input">Department Name</label>
+            </div>
+            <div class="form-floating mb-3">
                 <input type="email" class="form-control" id="patient-id-input" placeholder="" disabled>
-                <label style="color: grey;" for="patient-id-input">Email address</label>
+                <label style="color: grey;" for="patient-id-input">Patient ID</label>
             </div>
             <div class="form-floating mb-3">
                 <input type="email" class="form-control" id="doctor-id-input" placeholder="" disabled>
-                <label style="color: grey;" for="doctor-id-input">Email address</label>
+                <label style="color: grey;" for="doctor-id-input">Doctor ID</label>
             </div>
             <div class="form-floating mb-3">
                 <input type="email" class="form-control" id="app-date-input" placeholder="">
-                <label style="color: grey;" for="app-date-input">Email address</label>
+                <label style="color: grey;" for="app-date-input">Appointment Date</label>
             </div>
             <div class="row" style="margin-bottom: 12px;">
                 <div class="col" style="display: flex; justify-content: center;">
@@ -90,10 +96,17 @@
         let params = new URLSearchParams(window.location.search);
         let patient_id = params.get('patient_id').replace('id', '');
         SetPatientID();
-
+        
+        function SetPatientID()
+        {
+            const patientIdInput = document.getElementById('patient-id-input');
+            patientIdInput.value = patient_id;
+        }
+        
         function ChooseDepartment(_departmentName, departmentID)
         {
-            document.getElementById("department-name").innerHTML = _departmentName;
+            document.getElementById('department-name').innerHTML = _departmentName;
+            document.getElementById('department-name-input').value =_departmentName;
             FindDoctors(departmentID);
         }
 
@@ -120,24 +133,22 @@
             const doctorIdInput = document.getElementById('doctor-id-input');
             doctorIdInput.value = doctor_id;
         }
-        
-        function SetPatientID()
-        {
-            const patientIdInput = document.getElementById('patient-id-input');
-            patientIdInput.value = patient_id;
-        }
 
         function BookAppointment()
         {
+            let department_name = document.getElementById("department-name-input").value;
             let doctorID = document.getElementById('doctor-id-input').value;
             let app_date = document.getElementById('app-date-input').value;
-            //alert(`===== Adding new appointment patient_id ${patient_id} doctor_id ${doctorID} app_date ${app_date}`);
-            fetch(`/bookNewAppointment?&patient_id=${patient_id}&doctor_id=${doctorID}&app_date=${app_date}&app_status=SC`)
+
+            fetch(`/bookNewAppointment?&patient_id=${patient_id}&doctor_id=${doctorID}&app_date=${app_date}&app_status=SC&department_name=${department_name}`)
             .then(response => response.json())
             .then(data => {
                 window.location.href = `patientProfile.html?id=${patient_id}`;
             })
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => {
+                alert('Insufficient balance!'); //not working
+                console.error('Error fetching data:', error)
+            });
         }
 
         function ClearTable()
