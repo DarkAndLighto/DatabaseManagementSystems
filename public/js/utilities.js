@@ -1,15 +1,20 @@
 //The fields here are the columns of each table (as seen in PG admit)
 const tableFields = {
     "users": ["user_id", "occupation", "first_name", "last_name", "gender", "date_of_birth"],
-    "contact_information": ["contact_id", "user_id", "address", "email", "phone_number"],
     "patient": ["patient_id", "balance"],
     "managers": ["manager_id"],
     "doctors": ["doctor_id", "department_id", "license_id"],
+    "nurses": ["nurse_id", "department_id"],
+    "staff": ["staff_id", "department_id", "role"],
+    "contact_information": ["contact_id", "user_id", "address", "email", "phone_number"],
     "departments": ["department_id", "hospital_id", "manager_id", "name", "description", "phone_number"],
     "emergency_contact": ["em_con_id", "first_name", "last_name", "gender", "date_of_birth", "relationship", "phone_number", "address", "email"],
     "insurance": ["insurance_id", "insurance_provider", "policy_number", "coverage_amount"],
     "appointments": ["appointment_id", "patient_id", "doctor_id", "app_date", "app_status"],
     "payments": ["payment_id", "appointment_id", "amount"],
+    "prescriptions": ["prescription_id", "appointment_id", "dosage", "start_date", "end_date"],
+    "medications": ["medication_id", "name", "administration_method", "manufacturer", "expiry_date", "supply"],
+    "prescription_medications": ["pres_med_id", "prescription_id", "medication_id"],
     "city": ["city_id", "name"],
     "district": ["district_id", "name"]
 };
@@ -84,6 +89,19 @@ const tableHeaders = {
         "Policy Number",
         "Coverage amount"
     ],
+    "staff": [
+        "",
+        "#",
+        "ID",
+        "Department ID",
+        "Role"
+    ],
+    "nurses": [
+        "",
+        "#",
+        "ID",
+        "Department ID"
+    ],
     "appointments": [
         "",
         "#",
@@ -105,6 +123,32 @@ const tableHeaders = {
         "#",
         "ID",
         "Name"
+    ],
+    "prescriptions": [
+        "",
+        "#",
+        "ID",
+        "Appointment ID",
+        "Dosage",
+        "Start date",
+        "End date"
+    ],
+    "medications": [
+        "",
+        "#",
+        "ID",
+        "Name",
+        "Administration Method",
+        "Manufacturer",
+        "Expiry date",
+        "supply"
+    ],
+    "prescription_medications": [
+        "",
+        "#",
+        "ID",
+        "Prescription ID",
+        "Medication ID"
     ],
     "district": [
         "",
@@ -142,6 +186,15 @@ const dropdownItems = {
         ["department_id", "Department ID"],
         ["license_id", "License ID"]
     ],
+    "staff": [
+        ["staff_id", "ID"],
+        ["department_id", "Department ID"],
+        ["role", "Role"]
+    ],
+    "nurses": [
+        ["nurse_id", "ID"],
+        ["department_id", "Department ID"]
+    ],
     "departments": [
         ["department_id", "hospital_id", "manager_id", "name", "description", "phone_number"]
     ],
@@ -173,6 +226,26 @@ const dropdownItems = {
         ["payment_id", "ID"],
         ["appointment_id", "ID"],
         ["amount", "Amount"]
+    ],
+    "prescriptions": [
+        ["prescription_id", "ID"],
+        ["appointment_id", "Appointment ID"],
+        ["dosage", "Dosage"],
+        ["start_date", "Start date"],
+        ["end_date", "End date"]
+    ],
+    "medications": [
+        ["medication_id", "ID"],
+        ["name", "Name"],
+        ["administration_method", "Administration method"],
+        ["manufacturer", "Manufacturer"],
+        ["expiry_date", "Expiry date"],
+        ["supply", "Supply"]
+    ],
+    "prescription_medications": [
+        ["pres_med_id", "ID"],
+        ["prescription_id", "Prescription ID"],
+        ["medication_id", "Medication ID"]
     ],
     "city": [
         ["city_id", "ID"],

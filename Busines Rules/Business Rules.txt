@@ -36,115 +36,85 @@ Notes{
         and nurse/staff/Manager aren't linked to begin with
 } 
 
-Person{
-    MB: patient OR doctor OR nurse OR staff OR Manager
-    1:M ContantInformation
-}
+Business Rules (Using only 1:M, 1:1, etc.):
 
-ContantInformation{
-    1:1 Person
-}
+users
 
-Manager{
-    0:1 hospital
-    0:M department
-}
-hospital {
-    1:1 Manager
-    1:1 city
-    1:1 district
-    1:M hospital
-    1:M department
-}
+1:1 with contact_information (via user_id)
+1:M with patient (user can be a patient or not?)
+1:M with doctors/nurses/staff/managers (user can be one of these roles)
+contact_information
 
-city {
-    0:M hospital
-    1:M district
-}
+1:1 with users (one contact info per user)
+managers
 
-district{
-    0:M hospital
-    1:1 city
-    0:M building
-}
+1:1 with hospital
+1:M with departments
+hospital
 
-building{
-    //maybe add room here?
-    1:1 district
-}
+1:1 with city
+1:1 with district
+1:1 with managers
+1:M with departments
+city
 
-patient{
-    1:M appointment
-    === 0:1 surgery
-    1:M payment //the patient does the payment directly?
-    0:1 insurance
-    0:M emergencyContact
-}
+1:M with district
+0:M with hospital
+district
 
-doctor{
-    1:1 hospital
-    1:1 department
-    0:M appointment
-}
+1:1 with city
+0:M with hospital
+patient
+SELECT * FROM hospital
+WHERE city_ID = 2;
+1:1 with users
+1:M with appointments
+1:M with payments
+0:1 with insurance
+0:M with emergency_contact
+doctors
 
-nurse {
-    1:1 department
-    //0:M surgery
-}
+1:1 with users
+1:M with appointments (a doctor can have many appointments)
+1:1 with departments
+nurses
 
-staff{
-    1:1 department
-}
+1:1 with users
+1:1 with departments
+staff
 
-department{
-    1:1 Manager
-    1:1 hospital
-    1:M doctor
-    1:M nurse
-    1:M staff
-    0:M room
-}
+1:1 with users
+1:1 with departments
+departments
 
-room{
-    1:1 department
-    0:M appointment
-}
+1:1 with managers
+1:M with doctors
+1:M with nurses
+1:M with staff
+1:M with rooms
+appointments
 
-appointment{
-    1:1 patient
-    1:1 doctor
-    1:1 department //delete because doctor has departmentID?
-    0:1 room
-    1:1 payment
-    //0:1 surgery
-    1:1 prescription
-}
+1:1 with patient
+1:1 with doctor
+1:1 with payments
+1:1 with prescriptions
+0:1 with room
+payments
 
-surgery{
-    1:1 appointment
-}
+1:1 with appointments
+prescriptions
 
-payment{
-    1:1 appointment
-}
+1:1 with appointments
+1:M with prescription_medications
+medications
 
-prescription{
-    1:1 appointment
-    1:M medication
-}
+0:M with prescription_medications
+insurance
 
-medication{
-    0:M prescription
-}
+1:1 with patient
+emergency_contact
 
-insurance{
-    1:1 patient
-}
+1:1 with patient
+prescription_medications (junction table)
 
-medicalRecord{
-    1:1 appointment
-}
-
-emergencyContact{
-    1:1 patient
-}
+M:M between prescriptions and medications

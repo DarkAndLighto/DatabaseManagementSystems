@@ -41,7 +41,7 @@
                 </div>
             </div>
             
-            <div id="error-message"> S </div>
+            <div id="error-message"> </div>
         </div>
     </div>
     
@@ -135,11 +135,18 @@
             fetch(`/newRecord?&table_name="emergency_contact"&patient_id=${user_id}&first_name=${first_name}&last_name=${last_name}&gender=${gender}&date_of_birth=${date_birth}&relationship=${relationship}&phone_number=${phone_number}&address=${address}&email=${email}`)
             .then(response => response.json())
             .then (data => {
-                window.location.href = `http://localhost:5000/patientProfile.html?id=${user_id}`;
+                if (data.error) 
+                { 
+                    document.getElementById('error-message').innerHTML = data.error;
+                } 
+                else 
+                { 
+                    window.location.href = `http://localhost:5000/patientProfile.html?id=${user_id}`; 
+                }
             })
             .catch(error => {
                 getElementById('error-message').innerHTML = error;
-                console.error('Error fetching data:', error) 
+                console.error('Error fetching data:', error)
             });
         }
 
@@ -152,7 +159,14 @@
             fetch(`/newRecord?&table_name="insurance"&patient_id=${user_id}&insurance_provider=${insurance_provider}&policy_number=${policy_number}&coverage_amount=${coverage_amount}`)
             .then(response => response.json())
             .then (data => {
-                window.location.href = `http://localhost:5000/patientProfile.html?id=${user_id}`;
+                if (data.error) 
+                { 
+                    document.getElementById('error-message').innerHTML = data.error;
+                } 
+                else 
+                { 
+                    window.location.href = `http://localhost:5000/patientProfile.html?id=${user_id}`;
+                }
             })
             .catch(error => console.error('Error fetching data:', error));
         }
@@ -171,10 +185,16 @@
             fetch(`/updateRecord?&table_name="emergency_contact"&column="em_con_id"&row=${em_con_id}&first_name=${first_name}&last_name=${last_name}&gender=${gender}&date_of_birth=${date_birth}&relationship=${relationship}&phone_number=${phone_number}&address=${address}&email=${email}`)
             .then(response => response.json())
             .then (data => { 
-                window.location.href = `http://localhost:5000/patientProfile.html?id=${patient_id}`;
+                if (data.error)
+                {
+                    document.getElementById('error-message').innerHTML = data.error;
+                } 
+                else
+                {
+                    window.location.href = `http://localhost:5000/patientProfile.html?id=${patient_id}`;
+                }
             })
             .catch(error => {
-                document.getElementById('error-message').innerHTML = error;
                 console.error('Error fetching data:', error) 
             });
         }
@@ -261,11 +281,17 @@
 
             fetch(`/updateRecord?&table_name="insurance"&column="insurance_id"&row=${insurance_id}&insurance_provider=${insurance_provider}&policy_number=${policy_number}&coverage_amount=${coverage_amount}`)
             .then(response => response.json())
-            .then(data => { 
-                window.location.href = `http://localhost:5000/patientProfile.html?id=${patient_id}`;
+            .then(data => {
+                if (data.error)
+                {
+                    document.getElementById('error-message').innerHTML = data.error;
+                } 
+                else
+                {
+                    window.location.href = `http://localhost:5000/patientProfile.html?id=${patient_id}`;
+                }
             })
             .catch(error => {
-                document.getElementById('error-message').innerHTML = error;
                 console.error('Error fetching data:', error) 
             });
         }

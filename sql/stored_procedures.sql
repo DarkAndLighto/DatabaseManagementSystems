@@ -73,8 +73,8 @@ $$;
 
 
 
-DROP PROCEDURE process_appointment;
 ///process appointment
+DROP PROCEDURE process_appointment;
 CREATE OR REPLACE PROCEDURE process_appointment(
     IN process_appointment_id INT
 )
@@ -86,22 +86,26 @@ DECLARE
     process_patient_balance INT;
     process_appointment_status CHAR(2);
 BEGIN
-    SELECT a.patient_id, p.amount, a.app_status INTO process_patient_id, process_amount, process_appointment_status
+    -- Retrieve details about the appointment and payment
+    SELECT a.patient_id, p.amount, a.app_status 
+    INTO process_patient_id, process_amount, process_appointment_status
     FROM appointments a
     JOIN payments p ON a.appointment_id = p.appointment_id
     WHERE a.appointment_id = process_appointment_id;
 
+    -- Check if the appointment is already completed
     IF process_appointment_status = 'CO' THEN
         RAISE EXCEPTION 'Appointment is already completed.';
     END IF;
     
-    --get the current balance of the patient
+    -- Get the current balance of the patient
     SELECT pt.balance INTO process_patient_balance
     FROM patient pt
     WHERE pt.patient_id = process_patient_id;
     
-    --check if the patient has enough balance
+    -- Check if the patient has enough balance
     IF process_patient_balance >= process_amount THEN
+        -- Deduct the payment amount from the patient's balance
         UPDATE patient
         SET balance = balance - process_amount
         WHERE patient_id = process_patient_id;
@@ -110,9 +114,12 @@ BEGIN
         UPDATE appointments
         SET app_status = 'CO'
         WHERE appointment_id = process_appointment_id;
+
+        -- Call the new procedure to generate a prescription
+        CALL generate_prescription(process_appointment_id);
         
         -- Return success message
-        RAISE NOTICE 'Appointment completed successfully.';
+        RAISE NOTICE 'Appointment completed successfully, and prescription generated.';
     ELSE
         -- Return insufficient balance message
         RAISE EXCEPTION 'Insufficient balance to complete the appointment.';
@@ -132,23 +139,23 @@ $$;
 
 
 
+
+
 ///add doctor
 DO $$
 DECLARE 
     new_user_id INT;
 BEGIN
-    INSERT INTO users (first_name, last_name, gender, date_of_birth)
-    VALUES ('gg', 'ff', 'M', '8/13/1993')
+    INSERT INTO users (first_name, last_name, gender, date_of_birth, occupation)
+    VALUES ('Rojda', 'bulbul', 'F', '11/10/2002', 'Doctor')
     RETURNING user_id INTO new_user_id;
 
     INSERT INTO contact_information (user_id, phone_number, address, email) 
-    VALUES (new_user_id, 5115151551, 'Aleppo', 'TT@TT3');
+    VALUES (new_user_id, 523522432, 'Sanlıurfa', 'ezzrojim@gmail.com');
 
-    INSERT INTO doctors (doctor_id, department_id, license_id)
-    VALUES (new_user_id, 4, '65435');
+    INSERT INTO doctors (staff_id, department_id, license_id)
+    VALUES (new_user_id, 3, 34271);
 END $$;
-
-
 
 
 ///add manager
@@ -156,8 +163,8 @@ DO $$
 DECLARE 
     new_user_id INT;
 BEGIN
-    INSERT INTO users (first_name, last_name, gender, date_of_birth)
-    VALUES ('Hadi', 'Kazziha', 'M', '8/13/1993')
+    INSERT INTO users (first_name, last_name, gender, date_of_birth, occupation)
+    VALUES ('Hadi', 'Kazziha', 'M', '8/13/1993', 'Manager')
     RETURNING user_id INTO new_user_id;
 
     INSERT INTO contact_information (user_id, phone_number, address, email) 

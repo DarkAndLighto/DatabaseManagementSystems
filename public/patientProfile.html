@@ -317,9 +317,9 @@
                     `
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" ></button>
                                 <ul class="dropdown-menu">
-                                    Nothing to do here
+                                    <li><button class="dropdown-item" onclick="GetPrescriptions(${fieldValue.appointment_id})"">View prescription</button></li>
                                 </ul>
                             </div>
                         </td>
@@ -331,7 +331,7 @@
                         <td>${fieldValue.app_date}</td>
                         <td>${fieldValue.app_status}</td>
                         <td>${fieldValue.amount}</td>
-                        <td><button class='button-basics' onclick="ProcessAppointment(${fieldValue.appointment_id}, ${fieldValue.amount})">PRESS ME</button></td>
+                        <td><button class='button-basics' onclick="ProcessAppointment(${fieldValue.appointment_id}, ${fieldValue.amount})">Process appointment</button></td>
                     `
                     
                     userList.appendChild(tr);
@@ -352,10 +352,34 @@
                 FillAppointmentRows();
                 FillProfile();
             })
+            .catch(error => {
+                console.error('Error fetching data:', error)
+                alert(`Insufficient funds or appointment already completed`);
+            });
         }
 
         
-        
+        function GetPrescriptions(appointment_id)
+        {   
+            fetch(`/getPrescriptions?&appointment_id=${appointment_id}`)
+            .then(response => response.json())
+            .then(data => {
+
+                data.forEach((fieldValue, index) => 
+                {
+                    fieldValue.start_date = new Date(fieldValue.start_date).toLocaleDateString();
+                    fieldValue.end_date = new Date(fieldValue.end_date).toLocaleDateString();
+                    alert(`Prescription for: ${appointment_id}\nMedication Name: ${fieldValue.name}\nManufacturer: ${fieldValue.manufacturer}\nAdministration Method: ${fieldValue.administration_method}\nDosage: ${fieldValue.dosage}\nStart date: ${fieldValue.start_date}\nEnd date: ${fieldValue.end_date}
+                    `);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error)
+            });
+        }
+
+
+
         
         ///////// GENEREAL
 

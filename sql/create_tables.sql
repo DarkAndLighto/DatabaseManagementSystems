@@ -112,25 +112,28 @@ CREATE TABLE payments(
     amount INT NOT NULL
 );
 
-CREATE TABLE prescriptions(
+DROP TABLE prescriptions;
+CREATE TABLE prescriptions (
     prescription_id SERIAL PRIMARY KEY,
     appointment_id INT REFERENCES appointments(appointment_id) ON DELETE CASCADE,
-    dosage INT NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    notes VARCHAR(255)
+    dosage INT NOT NULL DEFAULT 5 + (FLOOR(RANDOM() * 6))::INT,
+    start_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    end_date DATE NOT NULL DEFAULT CURRENT_DATE + (5 + FLOOR(RANDOM() * 4))::INT
 );
 
+DROP TABLE prescription_medications;
 CREATE TABLE prescription_medications(
     pres_med_id SERIAL PRIMARY KEY,
     prescription_id INT REFERENCES prescriptions(prescription_id) ON DELETE CASCADE,
     medication_id INT REFERENCES medications(medication_id) ON DELETE CASCADE
 );
 
+DROP TABLE medications;
 CREATE TABLE medications(
     medication_id SERIAL PRIMARY KEY,
-    name VARCHAR(30) NOT NULL UNIQUE,
-    adminstraiton_method VARCHAR(30) NOT NULL,
-    manufacturer VARCHAR(255) NOT NULL,
-    expiry_date DATE NOT NULL
+    name VARCHAR(30) UNIQUE,
+    administration_method VARCHAR(30) NOT NULL DEFAULT 'Oral',
+    manufacturer VARCHAR(255) NOT NULL DEFAULT 'medixCor',
+    expiry_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    supply int NOT NULL DEFAULT 1000000
 );

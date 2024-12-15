@@ -103,7 +103,7 @@ app.get('/addNewUser', (req, res) => {
   })
   .catch((error) => {
     console.error('Error executing query:', error);
-    res.status(500).send('Server error');
+    res.status(400).send({ error: error.message });
   });
 });
 
@@ -185,7 +185,7 @@ app.get('/updateData', (req, res) => {
     })
     .catch((error) => {
       console.error('Error executing query:', error);
-      res.status(500).send('Server error');
+      res.status(400).send({ error: error.message });
     });
 })
 
@@ -340,7 +340,32 @@ app.get('/processAppointment', (req, res) => {
     });
 })
 
+app.get('/getPrescriptions', (req, res) => {
+  let appointment_id = req.query.appointment_id;
 
+  console.log(`===== getPrescriptions: appointment_id ${appointment_id}`);
+  let query = 
+  `
+    SELECT * FROM prescriptions p
+    JOIN Prescription_Medications pm
+    ON p.prescription_ID = pm.prescription_ID
+    JOIN Medications m
+    ON pm.medication_ID = m.medication_ID
+    WHERE appointment_id = ${appointment_id};
+  `;
+
+  pool.query(query)
+    .then((results) => {
+      res.header({
+        'Content-type': 'application/json'
+      });
+      res.send(results.rows);  // Send the query results
+    })
+    .catch((error) => {
+      console.error('Error executing query:', error);
+      res.status(500).send('Server error');
+    });
+})
 
 
 
@@ -437,7 +462,7 @@ app.get('/newRecord', (req, res) => {
     })
     .catch((error) => {
       console.error('Error executing query:', error);
-      res.status(500).send('Server error');
+      res.status(400).send({ error: error.message });
     });
 });
 
@@ -455,7 +480,8 @@ app.get('/updateRecord', (req, res) => {
   console.log(`===== updateRecord: Updating record in table ${table_name} with id ${row} on column ${column}`);
   console.log(`Updates: ${updates}`);
 
-  const query = `
+  const query = 
+  `
     UPDATE ${table_name}
     SET ${updates}
     WHERE ${column} = '${row}';
@@ -470,7 +496,7 @@ app.get('/updateRecord', (req, res) => {
     })
     .catch((error) => {
       console.error('Error executing query:', error);
-      res.status(500).send('Server error');
+      res.status(400).send({ error: error.message });
     });
 });
 
