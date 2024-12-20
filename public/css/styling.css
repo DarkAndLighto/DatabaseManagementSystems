@@ -14,7 +14,7 @@
 body {
     color: var(--text-color);
     
-    background-image: linear-gradient(45deg,purple, pink,pink, rgb(255, 255, 37));
+    background-image: linear-gradient(45deg,purple, pink, blue);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;

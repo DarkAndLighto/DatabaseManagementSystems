@@ -38,7 +38,6 @@ EXECUTE FUNCTION set_payment_amount();
 
 
 
-
 CREATE OR REPLACE PROCEDURE generate_prescription(
     IN new_appointment_id INT
 )
@@ -180,3 +179,26 @@ CREATE TRIGGER enforce_max_emergency_contacts_trigger
 BEFORE INSERT ON emergency_contact
 FOR EACH ROW
 EXECUTE FUNCTION enforce_max_emergency_contacts();
+
+
+
+
+
+
+
+
+-- CLASS TEST DELETE
+CREATE OR REPLACE FUNCTION on_product_table_update_function()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO monitorSupplierChanging(productID, old_SupplierID, new_SupplierID, update_date)
+    VALUES (OLD.productID, OLD.SupplierID, NEW.SupplierID, CURRENT_DATE);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER on_product_table_update
+AFTER UPDATE ON product_table
+FOR EACH ROW
+EXECUTE FUNCTION on_product_table_update_function();
