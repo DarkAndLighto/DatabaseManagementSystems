@@ -151,7 +151,7 @@ BEGIN
     RETURNING user_id INTO new_user_id;
 
     INSERT INTO contact_information (user_id, phone_number, address, email) 
-    VALUES (new_user_id, 523522432, 'Sanlıurfa', 'ezzrojim@gmail.com');
+    VALUES (new_user_id, 523522432, 'Sanliurfa', 'ezzrojim@gmail.com');
 
     INSERT INTO doctors (doctor_id, department_id, license_id)
     VALUES (new_user_id, 3, 34271);

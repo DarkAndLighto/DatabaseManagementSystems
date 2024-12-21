@@ -16,15 +16,14 @@ CREATE TABLE contact_information (
 
 CREATE TABLE hospital (
     hospital_id SERIAL PRIMARY KEY,
-    city_id INT REFERENCES city(city_id) ON DELETE CASCADE,
-    district_id INT REFERENCES district(district_id) ON DELETE CASCADE,
-    manager_id INT REFERENCES managers(manager_id) ON DELETE CASCADE,
+    city_id INT REFERENCES city(city_id) ON DELETE CASCADE NOT NULL,
+    district_id INT REFERENCES district(district_id) ON DELETE CASCADE NOT NULL,
+    manager_id INT REFERENCES managers(manager_id) ON DELETE CASCADE NOT NULL,
     name VARCHAR(30) NOT NULL,
     address VARCHAR(30) NOT NULL UNIQUE,
     phone_number VARCHAR(30) NOT NULL UNIQUE,
     email VARCHAR(30) NOT NULL UNIQUE
 );
-
 
 CREATE TABLE city (
     city_id SERIAL PRIMARY KEY,

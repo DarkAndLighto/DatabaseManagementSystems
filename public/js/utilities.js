@@ -7,6 +7,7 @@ const tableFields = {
     "nurses": ["nurse_id", "department_id"],
     "staff": ["staff_id", "department_id", "role"],
     "contact_information": ["contact_id", "user_id", "address", "email", "phone_number"],
+    "hospital": ["hospital_id", "city_id", "district_id", "name", "address", "phone_number", "email", "manager_id"],
     "departments": ["department_id", "hospital_id", "manager_id", "name", "description", "phone_number"],
     "emergency_contact": ["em_con_id", "first_name", "last_name", "gender", "date_of_birth", "relationship", "phone_number", "address", "email"],
     "insurance": ["insurance_id", "insurance_provider", "policy_number", "coverage_amount"],
@@ -80,6 +81,18 @@ const tableHeaders = {
         "Phone Number",
         "Address",
         "Email"
+    ],
+    "hospital": [
+        "",
+        "#",
+        "ID",
+        "City ID",
+        "District ID",
+        "Name",
+        "Address",
+        "Phone Number",
+        "Email",
+        "Manager ID"
     ],
     "insurance": [
         "",
@@ -208,6 +221,16 @@ const dropdownItems = {
         ["phone_number", "Phone number"],
         ["address", "Address"],
         ["email", "Email"]
+    ],
+    "hospital": [
+        ["hospital_id", "ID"],
+        ["city_id", "City ID"],
+        ["district_id", "District ID"],
+        ["name", "Name"],
+        ["address", "Address"],
+        ["phone_number", "Phone number"],
+        ["email", "Email"],
+        ["manager_id", "Manager"]
     ],
     "insurance": [
         ["insurance_id", "ID"],
