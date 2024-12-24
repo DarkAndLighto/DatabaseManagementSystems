@@ -97,13 +97,13 @@ DECLARE
     random_medication_id INT;
     dosage INT := NEW.dosage;
 BEGIN
-    -- Select a random medication
+    --select a random medication
     SELECT medication_id INTO random_medication_id
     FROM medications
     ORDER BY random()
     LIMIT 1;
 
-    -- Update the supply of the selected medication
+    ---Update the supply of the selected medication
     UPDATE medications
     SET supply = supply - dosage
     WHERE medication_id = random_medication_id;
@@ -179,26 +179,3 @@ CREATE TRIGGER enforce_max_emergency_contacts_trigger
 BEFORE INSERT ON emergency_contact
 FOR EACH ROW
 EXECUTE FUNCTION enforce_max_emergency_contacts();
-
-
-
-
-
-
-
-
--- CLASS TEST DELETE
-CREATE OR REPLACE FUNCTION on_product_table_update_function()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO monitorSupplierChanging(productID, old_SupplierID, new_SupplierID, update_date)
-    VALUES (OLD.productID, OLD.SupplierID, NEW.SupplierID, CURRENT_DATE);
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER on_product_table_update
-AFTER UPDATE ON product_table
-FOR EACH ROW
-EXECUTE FUNCTION on_product_table_update_function();
